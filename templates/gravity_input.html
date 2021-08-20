@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Silahkan upload data gravitasi anda disini.</h2>
+  <p>data yang dimasukkan harus berformat csv dan memiliki delimiter yang sesuai.</p>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}  
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">upload CSV</button>
+  </form>
+{% endblock %}
