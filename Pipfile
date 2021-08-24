@@ -10,6 +10,7 @@ pandas = "==1.0.1"
 msvc-runtime = "*"
 scipy = "*"
 utm = "*"
+pillow = "*"
 
 [dev-packages]
 
