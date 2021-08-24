@@ -126,9 +126,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-LOGIN_REDIRECT_URL = 'buku'
+LOGIN_REDIRECT_URL = 'dashboard'
 
-LOGIN_URL = 'masuk'
+LOGIN_URL = 'login'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'storage')
 MEDIA_URL = '/storage/'

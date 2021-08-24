@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>
+                Daftar Data Gravitasi
+            </h3>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>WILAYAH</th>
+                        <th>NAMA USER</th>
+                        <th>NAMA FILE</th>
+                        <th>DELIMITER</th>
+                        <th>TANGGAL</th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bagian in rincian %}
+                    <tr>
+                        <td>{{ bagian.wilayah_ukur }}</td>
+                        <td>{{ bagian.user_id }}</td>
+                        <td>{{ bagian.file_input }}</td>
+                        <td>{{ bagian.delimiter }}</td>
+                        <td>{{ bagian.tanggal }}</td>
+                        <td>
+                            <a href="" class="btn btn-danger">Hapus</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="/upload-file" class="btn btn-primary">Upload File</a>
+            <a href="" class="btn btn-secondary">ekspor .xls</a>
+        </div>
+    </div>
+</div>
+    
+{% endblock %}

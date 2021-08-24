@@ -1,11 +1,11 @@
 from django.contrib import admin
-from .models import GravityTable, InputModel
+from .models import FileModel, DataModel
 
-@admin.register(GravityTable)
-class TableAdmin(admin.ModelAdmin):
-    list_display = ('x', 'y', 'z', 'FA')
+@admin.register(DataModel)
+class DataAdmin(admin.ModelAdmin):
+    list_display = ('x', 'y', 'z', 'FA', 'file_id')
 
-@admin.register(InputModel)
-class InputAdmin(admin.ModelAdmin):
-    list_display = ('pengirim', 'data_input', 'delimiter')
+@admin.register(FileModel)
+class FileAdmin(admin.ModelAdmin):
+    list_display = ('wilayah_ukur', 'user_id', 'file_input', 'delimiter', 'tanggal')
     

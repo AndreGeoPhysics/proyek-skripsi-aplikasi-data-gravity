@@ -1,7 +1,6 @@
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
-from .forms import InputForm
-from .models import InputModel, GravityTable
+from django.shortcuts import render, redirect, HttpResponse
+from .forms import FileForm
+from .models import FileModel, DataModel
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -9,6 +8,7 @@ from django.contrib.auth.forms import UserCreationForm
 import json
 import pandas as pd
 
+@login_required(login_url=settings.LOGIN_URL)
 def sign_up(request):
     if request.POST:
         form = UserCreationForm(request.POST)
@@ -26,26 +26,38 @@ def sign_up(request):
         }
     return render(request, 'sign-up.html', konteks)
 
+@login_required(login_url=settings.LOGIN_URL)
+def dashboard(request):
+    rincian = FileModel.objects.filter(user_id=request.user)
+    konteks = {
+        'rincian': rincian,
+    }
+    return render(request, 'dashboard.html', konteks)
+
+@login_required(login_url=settings.LOGIN_URL)
 def upload_file(request):
     if request.method == 'POST':
-        form = InputForm(request.POST, request.FILES)
+        form = FileForm(request.POST, request.FILES)
         if form.is_valid():
             delim = request.POST['delimiter']
-            form.save() 
-            uploaded_data = f"./storage/upload/{request.FILES['data_input']}"
+            obj = form.save(commit=False) 
+            uploaded_data = request.FILES['file_input']
+            print(uploaded_data)
             file_df, check, pesan = handle_file(uploaded_data, delim)
             if check == True:
+                obj.user_id = request.user
+                obj.save()
                 model_builder(file_df)
             else:
                 pass
-            form = InputForm()
+            form = FileForm()
             konteks = {
             'form' : form,
             'pesan' : pesan,
             }
             return render(request, 'upload-file.html', konteks)
     else:  
-        form = InputForm()
+        form = FileForm()
         konteks = {
             'form': form,
         }
@@ -68,5 +80,5 @@ def model_builder(df):
     y = json.dumps(df.iloc[:,1].values.tolist())
     z = json.dumps(df.iloc[:,2].values.tolist())
     FA = json.dumps(df.iloc[:,3].values.tolist())
-    data = GravityTable(x=x, y=y, z=z, FA=FA)
+    data = DataModel(x=x, y=y, z=z, FA=FA)
     data.save()   

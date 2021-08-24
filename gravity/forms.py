@@ -1,7 +1,14 @@
+from django.forms import ModelForm
 from django import forms
-from .models import InputModel
+from gravity.models import FileModel
 
-class InputForm(forms.ModelForm):
+class FileForm(forms.ModelForm):
     class Meta:
-        model = InputModel
-        fields = ('pengirim', 'delimiter', 'data_input')
+        model = FileModel
+        exclude = ('user_id',) 
+
+        widgets = {
+            'wilayah_ukur' : forms.TextInput({'class':'form-control'}),
+            'file_input' : forms.FileInput({'class':'form-control'}),
+            'delimiter' : forms.TextInput({'class':'form-control'}),
+        }
