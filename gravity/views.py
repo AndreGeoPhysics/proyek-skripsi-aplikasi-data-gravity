@@ -42,12 +42,12 @@ def upload_file(request):
             delim = request.POST['delimiter']
             obj = form.save(commit=False) 
             uploaded_data = request.FILES['file_input']
-            print(uploaded_data)
             file_df, check, pesan = handle_file(uploaded_data, delim)
             if check == True:
                 obj.user_id = request.user
-                obj.save()
-                model_builder(file_df)
+                key = obj.save()
+                print(form['id'])
+                model_builder(file_df, key)
             else:
                 pass
             form = FileForm()
@@ -75,10 +75,17 @@ def handle_file(file_input, delim=','):
     except:
         return file_input, False, 'data tidak terbaca'
     
-def model_builder(df):
+def model_builder(df, key):
+    file_asal = key
     x = json.dumps(df.iloc[:,0].values.tolist())
     y = json.dumps(df.iloc[:,1].values.tolist())
     z = json.dumps(df.iloc[:,2].values.tolist())
     FA = json.dumps(df.iloc[:,3].values.tolist())
-    data = DataModel(x=x, y=y, z=z, FA=FA)
+    data = DataModel(file_asal=file_asal, x=x, y=y, z=z, FA=FA)
     data.save()   
+
+@login_required(login_url=settings.LOGIN_URL)
+def hapus_file(request, current_id):
+    target = FileModel.objects.filter(id=current_id)
+    target.delete()
+    return redirect('dashboard')

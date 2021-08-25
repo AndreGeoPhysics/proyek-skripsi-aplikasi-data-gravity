@@ -13,7 +13,7 @@ urlpatterns = [
     path('dashboard/', dashboard, name='dashboard'),
     path('upload-file/', upload_file, name='upload_file'),
     #path('ubah-file/', ubah_file, name='ubah_file'),
-    #path('hapus-file/', hapus_file, name='hapus_file'),
+    path('dashboard/hapus/<int:current_id>', hapus_file, name='hapus_file'),
 ]
 
 if settings.DEBUG:

@@ -12,7 +12,8 @@ class FileModel(models.Model):
         return self.wilayah_ukur
 
 class DataModel(models.Model):
-    file_id = models.ForeignKey(FileModel, null=True, on_delete=models.CASCADE)
+    user_
+    file_asal = models.OneToOneField(FileModel, on_delete=models.CASCADE, null=True)
     x = models.TextField(null=True)
     y = models.TextField(null=True)
     z = models.TextField(null=True)

@@ -11,6 +11,7 @@ msvc-runtime = "*"
 scipy = "*"
 utm = "*"
 pillow = "*"
+django-guid = "*"
 
 [dev-packages]
 
