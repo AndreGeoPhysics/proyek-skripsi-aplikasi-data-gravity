@@ -1,14 +1,7 @@
 from django.forms import ModelForm
 from django import forms
-from gravity.models import FileModel
 
-class FileForm(forms.ModelForm):
-    class Meta:
-        model = FileModel
-        exclude = ('user_id',) 
-
-        widgets = {
-            'wilayah_ukur' : forms.TextInput({'class':'form-control'}),
-            'file_input' : forms.FileInput({'class':'form-control'}),
-            'delimiter' : forms.TextInput({'class':'form-control'}),
-        }
+class FileForm(forms.Form):
+    nama_proyek = forms.CharField(max_length=100)
+    delimiter = forms.CharField(max_length=100)
+    file_gravity = forms.FileField(upload_to=)

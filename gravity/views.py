@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse
 from .forms import FileForm
-from .models import FileModel, DataModel
+from .models import GravityTable
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -28,7 +28,7 @@ def sign_up(request):
 
 @login_required(login_url=settings.LOGIN_URL)
 def dashboard(request):
-    rincian = FileModel.objects.filter(user_id=request.user)
+    rincian = GravityTable.objects.filter(user_id=request.user)
     konteks = {
         'rincian': rincian,
     }
@@ -40,14 +40,12 @@ def upload_file(request):
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
             delim = request.POST['delimiter']
-            obj = form.save(commit=False) 
+            obj = form.save(commit=False)  
             uploaded_data = request.FILES['file_input']
             file_df, check, pesan = handle_file(uploaded_data, delim)
             if check == True:
                 obj.user_id = request.user
-                key = obj.save()
-                print(form['id'])
-                model_builder(file_df, key)
+                model_builder(file_df)
             else:
                 pass
             form = FileForm()
@@ -75,17 +73,16 @@ def handle_file(file_input, delim=','):
     except:
         return file_input, False, 'data tidak terbaca'
     
-def model_builder(df, key):
-    file_asal = key
+def gravitymodel_builder(df):
     x = json.dumps(df.iloc[:,0].values.tolist())
     y = json.dumps(df.iloc[:,1].values.tolist())
     z = json.dumps(df.iloc[:,2].values.tolist())
     FA = json.dumps(df.iloc[:,3].values.tolist())
-    data = DataModel(file_asal=file_asal, x=x, y=y, z=z, FA=FA)
+    data = GravityTable(file_asal=file_asal, x=x, y=y, z=z, FA=FA)
     data.save()   
 
 @login_required(login_url=settings.LOGIN_URL)
 def hapus_file(request, current_id):
-    target = FileModel.objects.filter(id=current_id)
+    target = GravityTable.objects.filter(id=current_id)
     target.delete()
     return redirect('dashboard')
