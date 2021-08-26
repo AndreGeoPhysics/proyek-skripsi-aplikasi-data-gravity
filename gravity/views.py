@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+import os
 import json
 import pandas as pd
 
@@ -95,6 +96,7 @@ def handle_uploaded_file(f, db_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 def hapus_file(request, current_id):
-    target = GravityTable.objects.filter(unique_id=current_id)
+    target = GravityTable.objects.get(unique_id=current_id)
+    os.remove(target.url_name)
     target.delete()
     return redirect('dashboard')
