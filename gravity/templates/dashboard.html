@@ -11,10 +11,9 @@
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th>WILAYAH</th>
+                        <th>ID</th>
+                        <th>NAMA PROYEK</th>
                         <th>NAMA USER</th>
-                        <th>NAMA FILE</th>
-                        <th>DELIMITER</th>
                         <th>TANGGAL</th>
                         <th>ACTION</th>
                     </tr>
@@ -22,10 +21,9 @@
                 <tbody>
                     {% for bagian in rincian %}
                     <tr>
-                        <td>{{ bagian.wilayah_ukur }}</td>
+                        <td>{{ bagian.unique_id }}</td>
+                        <td>{{ bagian.nama_proyek }}</td>
                         <td>{{ bagian.user_id }}</td>
-                        <td>{{ bagian.file_input }}</td>
-                        <td>{{ bagian.delimiter }}</td>
                         <td>{{ bagian.tanggal }}</td>
                         <td>
                             <a href="{% url 'hapus_file' bagian.id %}" class="btn btn-danger">Hapus</a>

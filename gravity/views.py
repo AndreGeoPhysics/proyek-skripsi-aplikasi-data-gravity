@@ -39,13 +39,13 @@ def upload_file(request):
     if request.method == 'POST':
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
+            nama_user = request.user
+            nama = request.POST['nama_proyek']
             delim = request.POST['delimiter']
-            obj = form.save(commit=False)  
-            uploaded_data = request.FILES['file_input']
+            uploaded_data = f"./storage/{request.FILES['file_gravity']}"
             file_df, check, pesan = handle_file(uploaded_data, delim)
             if check == True:
-                obj.user_id = request.user
-                model_builder(file_df)
+                gravitymodelbuilder(nama_user, nama, file_df)
             else:
                 pass
             form = FileForm()
@@ -73,16 +73,18 @@ def handle_file(file_input, delim=','):
     except:
         return file_input, False, 'data tidak terbaca'
     
-def gravitymodel_builder(df):
+def gravitymodelbuilder(nama_user, nama, df):
+    user_id = nama_user
+    nama_proyek = nama
     x = json.dumps(df.iloc[:,0].values.tolist())
     y = json.dumps(df.iloc[:,1].values.tolist())
     z = json.dumps(df.iloc[:,2].values.tolist())
     FA = json.dumps(df.iloc[:,3].values.tolist())
-    data = GravityTable(file_asal=file_asal, x=x, y=y, z=z, FA=FA)
+    data = GravityTable(user_id=user_id, nama_proyek=nama_proyek, x=x, y=y, z=z, FA=FA)
     data.save()   
 
 @login_required(login_url=settings.LOGIN_URL)
 def hapus_file(request, current_id):
-    target = GravityTable.objects.filter(id=current_id)
+    target = GravityTable.objects.filter(unique_id=current_id)
     target.delete()
     return redirect('dashboard')
