@@ -12,8 +12,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     path('dashboard/', dashboard, name='dashboard'),
     path('upload-file/', upload_file, name='upload_file'),
-    #path('ubah-file/', ubah_file, name='ubah_file'),
-    path('dashboard/hapus/<int:current_id>', hapus_file, name='hapus_file'),
+    path('dashboard/hapus/<current_id>', hapus_file, name='hapus_file'),
 ]
 
 if settings.DEBUG:

@@ -40,12 +40,13 @@ def upload_file(request):
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
             nama_user = request.user
-            nama = request.POST['nama_proyek']
+            nama = request.POST['nama_input']
             delim = request.POST['delimiter']
-            uploaded_data = f"./storage/{request.FILES['file_gravity']}"
+            uploaded_data = request.FILES['file_gravity']
             file_df, check, pesan = handle_file(uploaded_data, delim)
             if check == True:
-                gravitymodelbuilder(nama_user, nama, file_df)
+                model_id = gravitymodelbuilder(nama_user, nama, file_df)
+                handle_uploaded_file(uploaded_data, model_id)
             else:
                 pass
             form = FileForm()
@@ -68,20 +69,29 @@ def handle_file(file_input, delim=','):
         if column[0] == 4:
             return df, True, "data berhasil disimpan"
         else:
-
             return file_input, False, 'jumlah kolom data harus 4'
     except:
         return file_input, False, 'data tidak terbaca'
-    
+
 def gravitymodelbuilder(nama_user, nama, df):
     user_id = nama_user
     nama_proyek = nama
     x = json.dumps(df.iloc[:,0].values.tolist())
     y = json.dumps(df.iloc[:,1].values.tolist())
     z = json.dumps(df.iloc[:,2].values.tolist())
-    FA = json.dumps(df.iloc[:,3].values.tolist())
-    data = GravityTable(user_id=user_id, nama_proyek=nama_proyek, x=x, y=y, z=z, FA=FA)
-    data.save()   
+    freeair = json.dumps(df.iloc[:,3].values.tolist())
+    data = GravityTable(user_id=user_id, nama_proyek=nama_proyek, x=x, y=y, z=z, freeair=freeair)
+    data.save()
+    return data.unique_id  
+
+def handle_uploaded_file(f, db_id):
+    url_name = f'gravity/simpan/{db_id}{f.name}'
+    with open(url_name, 'wb+') as destination:  
+        for chunk in f.chunks():
+            destination.write(chunk)
+    db = GravityTable.objects.get(unique_id=db_id)
+    db.url_name = url_name
+    db.save()
 
 @login_required(login_url=settings.LOGIN_URL)
 def hapus_file(request, current_id):

@@ -11,7 +11,6 @@
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>NAMA PROYEK</th>
                         <th>NAMA USER</th>
                         <th>TANGGAL</th>
@@ -21,12 +20,11 @@
                 <tbody>
                     {% for bagian in rincian %}
                     <tr>
-                        <td>{{ bagian.unique_id }}</td>
                         <td>{{ bagian.nama_proyek }}</td>
                         <td>{{ bagian.user_id }}</td>
                         <td>{{ bagian.tanggal }}</td>
                         <td>
-                            <a href="{% url 'hapus_file' bagian.id %}" class="btn btn-danger">Hapus</a>
+                            <a href="{% url 'hapus_file' bagian.unique_id %}" class="btn btn-danger">Hapus</a>
                         </td>
                     </tr>
                     {% endfor %}
