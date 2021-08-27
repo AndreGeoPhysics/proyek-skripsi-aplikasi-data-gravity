@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from .processing import *
 import os
 import json
 import pandas as pd
@@ -100,3 +101,33 @@ def hapus_file(request, current_id):
     os.remove(target.url_name)
     target.delete()
     return redirect('dashboard')
+
+def get_densitas(request, current_id):
+    table_data = GravityTable.objects.get(unique_id=current_id)
+    current_density = table_data.density
+    if current_density is None:
+        x, y, z, freeair = dbDecode(table_data)
+        density_data = densitas_parasnis(freeair, z)
+        table_data.density = density_data
+        tabel_data.save()
+        return density_data
+    else:
+        return current_density
+
+def get_bouger(request,current_id):
+    table_data = GravityTable.objects.get(unique_id=current_id)
+    current_density = table_data.density
+    current_sba1 = table_data.sba1
+    current_sba2 = table_data.sba2
+    if current_density is None:
+        pass
+    elif current_sba1 and current_sba2 is None:
+        x, y, z, freeair = dbDecode(table_data)
+        sba1_data, sba2_data = densitas_parasnis(freeair, z)
+        table_data.sba1 = sba1_data
+        table_data.sba2 = sba2_data
+        tabel_data.save()
+        return sba1_data, sba2_data
+    else:
+        return current_sba1, current_sba2
+    

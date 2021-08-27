@@ -13,7 +13,8 @@ class GravityTable(models.Model):
     z = models.TextField(null=True)
     freeair = models.TextField(null=True)
     density = models.TextField(null=True)
-    sba = models.TextField(null=True)
-      
+    sba1 = models.TextField(null=True)
+    sba2 = models.TextField(null=True)
+
     def __str__(self):
         return self.unique_id

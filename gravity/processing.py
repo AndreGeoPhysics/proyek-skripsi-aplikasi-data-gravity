@@ -1,15 +1,15 @@
-from .models import InputModel, GravityTable
 import json
 import numpy as np
 import scipy.interpolate as interpolate
 import utm
 
-def dbDecode():
+def dbDecode(table):
     jsonDec = json.decoder.JSONDecoder()
-    x = jsonDec.decode(GravityTable.x)
-    y = jsonDec.decode(GravityTable.y)
-    z = jsonDec.decode(GravityTable.z)
-    FA = jsonDec.decode(GravityTable.FA)
+    x = jsonDec.decode(table.x)
+    y = jsonDec.decode(table.y)
+    z = jsonDec.decode(table.z)
+    freeair = jsonDec.decode(table.freeair)
+    return x, y, z, freeair
 
 def densitas_parasnis(freeair, elevasi):
     freeair = np.transpose(np.array([freeair]))
