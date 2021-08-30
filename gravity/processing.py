@@ -40,31 +40,24 @@ def get_graph():
     buffer.close()
     return graph
 
-def processing_data(x, y, z, densitas, SBA1, SBA2, wilayah):
-    class kontur:
-        def __init__(self,x,y,z):
-            self.x = x
-            self.y = y
-            self.z = z
-
-        def get_minmax(self):
+def processing_data(x, y, z, freeair_anomaly, densitas, SBA1, SBA2, wilayah):
+    def get_minmax(self):
             return min(self.x), max(self.x), min(self.y), max(self.y)
 
-        def meshgrid(self, window_x, window_y, x_min = 'data', x_max='data', y_min='data', y_max='data'):
-            if x_min == 'data' and x_max == 'data' and y_min == 'data' and y_max == 'data': 
-                x_min, x_max, y_min, y_max = kontur.get_minmax(self)
-            x_grid  = np.arange(x_min, x_max, window_x)
-            y_grid  = np.arange(y_min, y_max, window_y)
-            return np.meshgrid(x_grid, y_grid)
+    def meshgrid(self, window_x, window_y, x_min = 'data', x_max='data', y_min='data', y_max='data'):
+        if x_min == 'data' and x_max == 'data' and y_min == 'data' and y_max == 'data': 
+            x_min, x_max, y_min, y_max = kontur.get_minmax(self)
+        x_grid  = np.arange(x_min, x_max, window_x)
+        y_grid  = np.arange(y_min, y_max, window_y)
+        return np.meshgrid(x_grid, y_grid)
     
-        def get_grid(self, window_x, window_y, meshgrid=None, x_min = 'data', x_max='data', y_min='data', y_max='data',metode='linear'):
-            if meshgrid is None:
-                x_grid, y_grid  = kontur.meshgrid(self, window_x, window_y, x_min, x_max, y_min, y_max)
-            elif not meshgrid is None:
-                x_grid, y_grid  = meshgrid
-            x, y, z         = self.x, self.y, self.z
-            result = interpolate.griddata((x,y), z, (x_grid, y_grid), method=metode)
-            return result
+    def get_grid(self, window_x, window_y, meshgrid=None, x_min = 'data', x_max='data', y_min='data', y_max='data',metode='linear'):
+        if meshgrid is None:
+            x_grid, y_grid  = meshgrid(self, window_x, window_y, x_min, x_max, y_min, y_max)
+        elif not meshgrid is None:
+            x_grid, y_grid  = meshgrid
+        result = interpolate.griddata((x,y), z, (x_grid, y_grid), method=metode)
+        return result
 
     window = 1200
     grid_freeair = kontur(x,y,freeair_anomaly)

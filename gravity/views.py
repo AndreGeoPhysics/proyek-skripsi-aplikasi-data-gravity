@@ -44,7 +44,7 @@ def workspace(request, current_id):
     SBA1 = work_data.sba1
     SBA2 = work_data.sba2
     wilayah = work_data.nama_proyek
-    plot = processing_data(x, y, z, densitas, SBA1, SBA2, wilayah)
+    plot = processing_data(x, y, z, freeair_anomaly, densitas, SBA1, SBA2, wilayah)
     konteks = {
         'work_data' : work_data,
         'plot' : plot
