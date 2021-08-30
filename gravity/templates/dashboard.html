@@ -25,6 +25,7 @@
                         <td>{{ bagian.tanggal }}</td>
                         <td>
                             <a href="{% url 'hapus_file' bagian.unique_id %}" class="btn btn-danger">Hapus</a>
+                            <a href="{% url 'workspace' bagian.unique_id %}" class="btn btn-primary">Olah Data</a>
                         </td>
                     </tr>
                     {% endfor %}

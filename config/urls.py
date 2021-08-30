@@ -12,7 +12,10 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     path('dashboard/', dashboard, name='dashboard'),
     path('upload-file/', upload_file, name='upload_file'),
+    path('dashboard/workspace/<current_id>', workspace, name='workspace'),
     path('dashboard/hapus/<current_id>', hapus_file, name='hapus_file'),
+    path('dashboard/workspace/<current_id>/get-bouger', get_bouger, name='get_bouger'),
+    path('dashboard/workspace/<current_id>/get-density', get_density, name='get_density'),
 ]
 
 if settings.DEBUG:

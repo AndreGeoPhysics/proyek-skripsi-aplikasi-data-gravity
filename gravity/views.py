@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect, HttpResponse, HttpResponseRedirect
 from .forms import FileForm
 from .models import GravityTable
 from django.contrib import messages
@@ -36,6 +36,15 @@ def dashboard(request):
     }
     return render(request, 'dashboard.html', konteks)
 
+@login_required(login_url=settings.LOGIN_URL)
+def workspace(request, current_id):
+    work_data = GravityTable.objects.get(unique_id=current_id)
+    print(work_data.nama_proyek)
+    konteks = {
+        'work_data' : work_data,
+    }
+    return render(request, 'workspace.html', konteks)
+ 
 @login_required(login_url=settings.LOGIN_URL)
 def upload_file(request):
     if request.method == 'POST':
@@ -102,17 +111,17 @@ def hapus_file(request, current_id):
     target.delete()
     return redirect('dashboard')
 
-def get_densitas(request, current_id):
+def get_density(request, current_id):
     table_data = GravityTable.objects.get(unique_id=current_id)
     current_density = table_data.density
     if current_density is None:
         x, y, z, freeair = dbDecode(table_data)
         density_data = densitas_parasnis(freeair, z)
         table_data.density = density_data
-        tabel_data.save()
-        return density_data
+        table_data.save()
     else:
-        return current_density
+        pass
+    return HttpResponseRedirect(request.path_info)
 
 def get_bouger(request,current_id):
     table_data = GravityTable.objects.get(unique_id=current_id)
@@ -121,13 +130,13 @@ def get_bouger(request,current_id):
     current_sba2 = table_data.sba2
     if current_density is None:
         pass
-    elif current_sba1 and current_sba2 is None:
+    elif current_sba1 or current_sba2 is None:
         x, y, z, freeair = dbDecode(table_data)
-        sba1_data, sba2_data = densitas_parasnis(freeair, z)
+        sba1_data, sba2_data = bouger(freeair, z, current_density)
         table_data.sba1 = sba1_data
         table_data.sba2 = sba2_data
-        tabel_data.save()
-        return sba1_data, sba2_data
+        table_data.save()
     else:
-        return current_sba1, current_sba2
+        pass
+    return HttpResponseRedirect(request.path_info)
     
