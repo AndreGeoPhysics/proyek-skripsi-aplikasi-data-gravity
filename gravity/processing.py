@@ -5,6 +5,9 @@ import scipy.interpolate as interpolate
 import utm
 from scipy.signal import convolve2d
 import matplotlib.pyplot as plt
+import base64
+from io import BytesIO
+
 
 def dbDecode(table):
     jsonDec = json.decoder.JSONDecoder()
@@ -27,14 +30,17 @@ def bouger(freeair, elevasi, densitas):
     SBA2 = np.transpose(freeair - (.04192 * 1.89 * elevasi)).tolist()[0]
     return SBA1, SBA2
 
-def processing_data(request, current_id):
-    table_data = GravityTable.objects.get(unique_id=current_id)
-    x, y, z, freeair_anomaly = dbDecode(table_data)
-    densitas = table_data.density
-    SBA1 = table_data.sba1
-    SBA2 = table_data.sba2
-    wilayah = table_data.nama_proyek
+def get_graph():
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_png = buffer.getvalue()
+    graph = base64.b64encode(image_png)
+    graph = graph.decode('utf-8')
+    buffer.close()
+    return graph
 
+def processing_data(request, current_id):
     class kontur:
         def __init__(self,x,y,z):
             self.x = x
@@ -102,7 +108,7 @@ def processing_data(request, current_id):
     grids = [grid_fa, grid_dem, grid_sba1, grid_sba2]
     judul = ['Freeair Anomaly %.2f'%(wilayah),'Elevasi %.2f'%(wilayah), 'SBA Kawah Ijen\n dengan densitas %.2f'%(densitas),'SBA Kawah Ijen\n dengan densitas %.2f'%(1.89)]
 
-
+    plt.switch_backend('AGG')
     plt.figure()
     for i in range(len(grids)):
         plt.subplot(2,2,i+1)
@@ -126,4 +132,5 @@ def processing_data(request, current_id):
         plt.ylabel('Northing')
         plt.colorbar()
         plt.tight_layout(pad=0.3, w_pad=0.4, h_pad=0.4)
-    plt.show() 
+    graph = get_graph()
+    return graph

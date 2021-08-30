@@ -39,9 +39,15 @@ def dashboard(request):
 @login_required(login_url=settings.LOGIN_URL)
 def workspace(request, current_id):
     work_data = GravityTable.objects.get(unique_id=current_id)
-    print(work_data.nama_proyek)
+    x, y, z, freeair_anomaly = dbDecode(work_data)
+    densitas = work_data.density
+    SBA1 = work_data.sba1
+    SBA2 = work_data.sba2
+    wilayah = work_data.nama_proyek
+    plot = processing_data(x, y, z, densitas, SBA1, SBA2, wilayah)
     konteks = {
         'work_data' : work_data,
+        'plot' : plot
     }
     return render(request, 'workspace.html', konteks)
  

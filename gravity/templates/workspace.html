@@ -24,11 +24,14 @@
                 </tbody>
             </table>
         </div>
+        {% if plot %}
+            <img src="data:image/png;base64, {{plot|safe}}">
+        {% endif %}
         <a href="{% url 'get_density' work_data.unique_id %}" class="btn btn-primary">Hitung Density</a>
         <a href="{% url 'get_bouger' work_data.unique_id %}" class="btn btn-secondary">Hitung Anomali Bouger</a>
+        <a href="{% url 'processing_data' work_data.unique_id %}" class="btn btn-success">Hitung Anomali Bouger</a>
         <a href="/dashboard" class="btn btn-danger">kembali</a>
-    </div>
-    
+    </div>   
 </div>
 
 {% endblock %}
