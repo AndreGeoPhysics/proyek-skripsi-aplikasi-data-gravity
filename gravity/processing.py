@@ -40,7 +40,7 @@ def get_graph():
     buffer.close()
     return graph
 
-def processing_data(request, current_id):
+def processing_data(x, y, z, densitas, SBA1, SBA2, wilayah):
     class kontur:
         def __init__(self,x,y,z):
             self.x = x
