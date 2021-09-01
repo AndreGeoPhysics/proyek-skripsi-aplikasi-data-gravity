@@ -41,24 +41,22 @@ def get_graph():
     return graph
 
 def processing_data(x, y, z, freeair_anomaly, densitas, SBA1, SBA2, wilayah):
-    def get_minmax(self):
-            return min(self.x), max(self.x), min(self.y), max(self.y)
-
-    def meshgrid(self, window_x, window_y, x_min = 'data', x_max='data', y_min='data', y_max='data'):
-        if x_min == 'data' and x_max == 'data' and y_min == 'data' and y_max == 'data': 
-            x_min, x_max, y_min, y_max = kontur.get_minmax(self)
-        x_grid  = np.arange(x_min, x_max, window_x)
-        y_grid  = np.arange(y_min, y_max, window_y)
-        return np.meshgrid(x_grid, y_grid)
-    
-    def get_grid(self, window_x, window_y, meshgrid=None, x_min = 'data', x_max='data', y_min='data', y_max='data',metode='linear'):
-        if meshgrid is None:
-            x_grid, y_grid  = meshgrid(self, window_x, window_y, x_min, x_max, y_min, y_max)
-        elif not meshgrid is None:
-            x_grid, y_grid  = meshgrid
-        result = interpolate.griddata((x,y), z, (x_grid, y_grid), method=metode)
-        return result
-
+    plt.figure(figsize = (12, 10))
+    plt.subplot(1,2,1)
+    plt.scatter(x, y, z, cmap = 'viridis', s=1)
+    plt.xlabel('Longitude')
+    plt.ylabel('Latitude')
+    plt.colorbar()
+    plt.title('Elevation Map')
+    plt.subplot(1,2,2)
+    plt.scatter(x, y, SBA1, cmap = 'jet', s=1)
+    plt.xlabel('Longitude')
+    plt.ylabel('Latitude')
+    plt.colorbar()
+    plt.title('Bouguer Anomaly Map')
+    graph = get_graph()
+    return graph
+"""
     window = 1200
     grid_freeair = kontur(x,y,freeair_anomaly)
     xi,yi        = grid_freeair.meshgrid(window_x=window, window_y=window)
@@ -71,7 +69,7 @@ def processing_data(x, y, z, freeair_anomaly, densitas, SBA1, SBA2, wilayah):
 
     def moving_average_2d(grid, window):
         window = np.ones((window[0],window[1]))
-        window /= window.sum()
+        window = window.sum()
         return convolve2d(grid, window, mode='same', boundary='symm')
 
     def svd(grid,mode='elkins'):
@@ -90,7 +88,7 @@ def processing_data(x, y, z, freeair_anomaly, densitas, SBA1, SBA2, wilayah):
                                 [ 0.0,     -0.0416,   0.00,   -0.0416,  0.00  ]])
         return convolve2d(grid, matriks, mode='same', boundary='symm')
 
-
+   
     svd_elkins_sba1 = svd(grid_sba1)
     svd_elkins_sba2 = svd(grid_sba2)
     svd_rosenb_sba1 = svd(grid_sba1,mode='rosenbach')
@@ -125,5 +123,4 @@ def processing_data(x, y, z, freeair_anomaly, densitas, SBA1, SBA2, wilayah):
         plt.ylabel('Northing')
         plt.colorbar()
         plt.tight_layout(pad=0.3, w_pad=0.4, h_pad=0.4)
-    graph = get_graph()
-    return graph
+"""
