@@ -2,30 +2,88 @@
 
 {% block content %}
 <div class="container">
-    <div class="row">
-        <div class="col-md-6"></div>
+    <div class="modal-body row">
+        <div class="col-md-6">
             <h3>Workspace</h3>
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
                         <th>NAMA PROYEK</th>
                         <th>NILAI DENSITAS</th>
-                        <th>SBA</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>{{ work_data.nama_proyek }}</td>
                         <td>{{ work_data.density }}</td>
-                        <td>{{ work_data.sba }}</td>
                     </tr>
                 </tbody>
             </table>
-        </div>
+            <br><br>
+            <head>
+                <style>
+                    .fixTableHead {
+                      overflow-y: auto;
+                      height: 300px;
+                    }
+                    .fixTableHead thead th {
+                      position: sticky;
+                      top: 0;
+                      background-color: red;
+                    }
+                    table {
+                      border-collapse: collapse;        
+                      width: 100%;
+                    }
+                    th,
+                    td {
+                      padding: 8px 15px;
+                      border: 2px solid #529432;
+                    }
+                    th {
+                      background: #ABDD93;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="fixTableHead">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>X</th>
+                                <th>Y</th>
+                                <th>Z</th>
+                                <th>FREE AIR ANOMALY</th>
+                                <th>SBA</th>
+                                <th>SVD</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for x, y, z, fa, sba in items %}
+                            <tr>
+                                <td>{{ x }}</td>
+                                <td>{{ y }}</td>
+                                <td>{{ z }}</td>
+                                <td>{{ fa }}</td>
+                                <td>{{ sba }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>        
+                </div>
+            </body>
+
         <a href="{% url 'get_density' work_data.unique_id %}" class="btn btn-primary">Hitung Density</a>
         <a href="{% url 'get_bouger' work_data.unique_id %}" class="btn btn-secondary">Hitung Anomali Bouger</a>
         <a href="{% url 'plot_data' work_data.unique_id %}" class="btn btn-success">plot data gravity</a>
         <a href="/dashboard" class="btn btn-danger">kembali</a>
+        </div>
+        <div class="col-md-6">
+            <h3>Plot Data Gravitasi</h3>
+            {% autoescape off %}
+            {{ plt_div }}
+            {% endautoescape %}
+        </div>
     </div>   
 </div>
 

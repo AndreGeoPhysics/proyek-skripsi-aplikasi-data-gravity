@@ -14,6 +14,7 @@ class GravityTable(models.Model):
     freeair = models.TextField(null=True)
     density = models.TextField(null=True)
     sba = models.TextField(null=True)
+    svd = models.TextField(null=True)
 
     def __str__(self):
         return self.unique_id

@@ -66,7 +66,7 @@ def get_density(request, current_id):
         table_data.save()
     else:
         pass
-    return redirect(request.path)
+    return redirect(request.META['HTTP_REFERER'])
 
 @login_required(login_url=settings.LOGIN_URL)
 def get_bouger(request, current_id):
@@ -82,7 +82,7 @@ def get_bouger(request, current_id):
         table_data.save()
     else:
         pass
-    return redirect(request.path)
+    return redirect(request.META['HTTP_REFERER'])
 
 def plot_data(request, current_id):
     table_data = GravityTable.objects.get(unique_id=current_id)
@@ -99,7 +99,7 @@ def plot_data(request, current_id):
               )
     fig.add_trace(contour)
     plt_div = plot(fig, output_type='div')   
-    return render(request, "plot-data.html", context={'plt_div': plt_div})
+    return render(request, "workspace.html", context={'plt_div': plt_div})
     
 @login_required(login_url=settings.LOGIN_URL)
 def sign_up(request):
@@ -130,8 +130,13 @@ def dashboard(request):
 @login_required(login_url=settings.LOGIN_URL)
 def workspace(request, current_id):
     work_data = GravityTable.objects.get(unique_id=current_id)
+    x, y, z, fa = dbDecode(work_data)
+    jsonDec = json.decoder.JSONDecoder()
+    sba = jsonDec.decode(work_data.sba)
+    items = zip(x, y, z, fa, sba)
     konteks = {
         'work_data' : work_data,
+        'items' : items
     }
     return render(request, 'workspace.html', konteks)
  
