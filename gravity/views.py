@@ -83,23 +83,6 @@ def get_bouger(request, current_id):
     else:
         pass
     return redirect(request.META['HTTP_REFERER'])
-
-def plot_data(request, current_id):
-    table_data = GravityTable.objects.get(unique_id=current_id)
-    x, y, z, freeair_anomaly = dbDecode(table_data)
-    densitas = table_data.density
-    SBA = table_data.sba
-    wilayah = table_data.nama_proyek
-    fig = go.Figure()
-    contour = go.Contour(
-              z=z,
-              x=x,
-              y=y,
-              colorscale='viridis',
-              )
-    fig.add_trace(contour)
-    plt_div = plot(fig, output_type='div')   
-    return render(request, "workspace.html", context={'plt_div': plt_div})
     
 @login_required(login_url=settings.LOGIN_URL)
 def sign_up(request):

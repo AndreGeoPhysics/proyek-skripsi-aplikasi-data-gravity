@@ -61,28 +61,157 @@
                         <tbody>
                             {% for x, y, z, fa, sba in items %}
                             <tr>
-                                <td>{{ x }}</td>
-                                <td>{{ y }}</td>
-                                <td>{{ z }}</td>
-                                <td>{{ fa }}</td>
-                                <td>{{ sba }}</td>
+                                <td class='x'>{{ x }}</td>
+                                <td class='y'>{{ y }}</td>
+                                <td class='z'>{{ z }}</td>
+                                <td class='fa'>{{ fa }}</td>
+                                <td class='sba'>{{ sba }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>        
                 </div>
             </body>
-
+        <br>
         <a href="{% url 'get_density' work_data.unique_id %}" class="btn btn-primary">Hitung Density</a>
         <a href="{% url 'get_bouger' work_data.unique_id %}" class="btn btn-secondary">Hitung Anomali Bouger</a>
-        <a href="{% url 'plot_data' work_data.unique_id %}" class="btn btn-success">plot data gravity</a>
         <a href="/dashboard" class="btn btn-danger">kembali</a>
         </div>
         <div class="col-md-6">
-            <h3>Plot Data Gravitasi</h3>
-            {% autoescape off %}
-            {{ plt_div }}
-            {% endautoescape %}
+            <head>
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+            </head>
+            <body>
+                <h3>Plot Data Gravitasi</h3>
+                <p>Klik pilihan untuk melihat peta kontur:</p>
+        
+                <div class="tab">
+                    <button class="tablinks" onclick="openContour(event, 'Elevasi')">Elevasi</button>
+                    <button class="tablinks" onclick="openContour(event, 'Free Air Anomaly')">Free Air Anomaly</button>
+                    <button class="tablinks" onclick="openContour(event, 'SBA')">SBA</button>
+                    <button class="tablinks" onclick="openContour(event, 'SVD')">SVD</button>
+                </div>
+        
+                <div id="Elevasi" class="tabcontent">
+                    <h3>Elevasi</h3>
+                    <div id="elevDiv"></div>
+                    <script>
+                        const zbox = document.querySelectorAll('td.z');
+                        let zarray = []
+                        for (let i = 0; i < zbox.length; i++) {
+                            zarray.push(zbox[i].innerHTML)
+                        }
+                        const xbox = document.querySelectorAll('td.x');
+                        let xarray = []
+                        for (let i = 0; i < xbox.length; i++) {
+                            xarray.push(xbox[i].innerHTML)
+                        }
+                        const ybox = document.querySelectorAll('td.y');
+                        let yarray = []
+                        for (let i = 0; i < ybox.length; i++) {
+                            yarray.push(ybox[i].innerHTML)
+                        }
+
+                        var data = [{
+                                    z : zarray,
+                                    x : xarray,
+                                    y : yarray,
+                                    type: 'contour'
+                                    }];
+                        var layout = {
+                                    title: 'Peta Kontur Elevasi'
+                                    };
+                        Plotly.newPlot('elevDiv', data, layout);
+                    </script>
+                </div>
+        
+                <div id="Free Air Anomaly" class="tabcontent">
+                    <h3>Free Air Anomaly</h3>
+                    <div id="faDiv"></div>
+                    <script>
+                        const fabox = document.querySelectorAll('td.fa');
+                        let faarray = []
+                        for (let i = 0; i < fabox.length; i++) {
+                            faarray.push(fabox[i].innerHTML)
+                        }
+                        const xboxfa = document.querySelectorAll('td.x');
+                        let xarrayfa = []
+                        for (let i = 0; i < xboxfa.length; i++) {
+                            xarrayfa.push(xboxfa[i].innerHTML)
+                        }
+                        const yboxfa = document.querySelectorAll('td.y');
+                        let yarrayfa = []
+                        for (let i = 0; i < yboxfa.length; i++) {
+                            yarrayfa.push(yboxfa[i].innerHTML)
+                        }
+
+                        var data = [{
+                                    z : faarray,
+                                    x : xarrayfa,
+                                    y : yarrayfa,
+                                    type: 'contour'
+                                    }];
+                        var layout = {
+                                    title: 'Peta Kontur Free Air'
+                                    };
+                        Plotly.newPlot('faDiv', data, layout);
+                    </script>
+                </div>
+         
+                <div id="SBA" class="tabcontent">
+                    <h3>SBA</h3>
+                    <div id="sbaDiv"></div>
+                    <script>
+                        const sbabox = document.querySelectorAll('td.sba');
+                        let sbaarray = []
+                        for (let i = 0; i < sbabox.length; i++) {
+                            sbaarray.push(sbabox[i].innerHTML)
+                        }
+                        let xboxsba = document.querySelectorAll('td.x');
+                        let xarraysba = []
+                        for (let i = 0; i < xboxsba.length; i++) {
+                            xarraysba.push(xboxsba[i].innerHTML)
+                        }
+                        let yboxsba = document.querySelectorAll('td.y');
+                        let yarraysba = []
+                        for (let i = 0; i < yboxsba.length; i++) {
+                            yarraysba.push(yboxsba[i].innerHTML)
+                        }
+
+                        var data = [{
+                                    z : sbaarray,
+                                    x : xarraysba,
+                                    y : yarraysba,
+                                    type: 'contour'
+                                    }];
+                        var layout = {
+                                    title: 'Peta Kontur Bouger'
+                                    };
+                        Plotly.newPlot('sbaDiv', data, layout);
+                    </script>
+                </div>
+
+                <div id="SVD" class="tabcontent">
+                    <h3>SVD</h3>
+                    <p>empty</p>
+                </div>
+        
+            <script>
+                function openContour(evt, dataName) {
+                    var i, tabcontent, tablinks;
+                    tabcontent = document.getElementsByClassName("tabcontent");
+                    for (i = 0; i < tabcontent.length; i++) {
+                        tabcontent[i].style.display = "none";
+                    }
+                    tablinks = document.getElementsByClassName("tablinks");
+                    for (i = 0; i < tablinks.length; i++) {
+                        tablinks[i].className = tablinks[i].className.replace(" active", "");
+                    }
+                    document.getElementById(dataName).style.display = "block";
+                    evt.currentTarget.className += " active";
+                }
+            </script>           
+            </body>
         </div>
     </div>   
 </div>
