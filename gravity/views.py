@@ -13,8 +13,6 @@ import os
 import json
 import pandas as pd
 
-
-@login_required(login_url=settings.LOGIN_URL)
 def handle_file(file_input, delim=','):
     try:
         df = pd.read_csv(file_input, sep=delim)
@@ -26,7 +24,6 @@ def handle_file(file_input, delim=','):
     except:
         return file_input, False, 'data tidak terbaca'
 
-@login_required(login_url=settings.LOGIN_URL)
 def gravitymodelbuilder(nama_user, nama, df):
     user_id = nama_user
     nama_proyek = nama
@@ -38,7 +35,6 @@ def gravitymodelbuilder(nama_user, nama, df):
     data.save()
     return data.unique_id  
 
-@login_required(login_url=settings.LOGIN_URL)
 def handle_uploaded_file(f, db_id):
     url_name = f'gravity/simpan/{db_id}{f.name}'
     with open(url_name, 'wb+') as destination:  
@@ -113,9 +109,12 @@ def dashboard(request):
 @login_required(login_url=settings.LOGIN_URL)
 def workspace(request, current_id):
     work_data = GravityTable.objects.get(unique_id=current_id)
-    x, y, z, fa = dbDecode(work_data)
-    jsonDec = json.decoder.JSONDecoder()
-    sba = jsonDec.decode(work_data.sba)
+    x , y, z, fa = dbDecode(work_data)
+    if work_data.sba is not None:
+        jsonDec = json.decoder.JSONDecoder()
+        sba = jsonDec.decode(work_data.sba)    
+    else:
+        sba = np.full_like(x, 0)
     items = zip(x, y, z, fa, sba)
     konteks = {
         'work_data' : work_data,
@@ -129,6 +128,7 @@ def upload_file(request):
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
             nama_user = request.user
+            print(nama_user)
             nama = request.POST['nama_input']
             delim = request.POST['delimiter']
             uploaded_data = request.FILES['file_gravity']
