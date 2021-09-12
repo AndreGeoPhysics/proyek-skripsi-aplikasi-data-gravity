@@ -4,7 +4,19 @@
 <div class="container">
     <div class="modal-body row">
         <div class="col-md-6">
-            <h3>Workspace</h3>
+            <h3 id='pageTitle'>Workspace</h3>
+            <script>
+                function loadDoc() {
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            document.getElementById('pageTitle').innerHTML = this.responseText;
+                        }
+                    };
+                    xhttp.open("GET", "{% url 'test' work_data.unique_id %}", true);
+                    xhttp.send();
+                }
+            </script>
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
@@ -75,6 +87,7 @@
         <br>
         <a href="{% url 'get_density' work_data.unique_id %}" class="btn btn-primary">Hitung Density</a>
         <a href="{% url 'get_bouger' work_data.unique_id %}" class="btn btn-secondary">Hitung Anomali Bouger</a>
+        <button type='button' onclick="loadDoc()">ubah judul halaman</button>
         <a href="/dashboard" class="btn btn-danger">kembali</a>
         </div>
         <div class="col-md-6">
@@ -116,7 +129,8 @@
                                     z : zarray,
                                     x : xarray,
                                     y : yarray,
-                                    type: 'contour'
+                                    type: 'contour',
+                                    colorscale: 'Jet'
                                     }];
                         var layout = {
                                     title: 'Peta Kontur Elevasi'
@@ -149,7 +163,8 @@
                                     z : faarray,
                                     x : xarrayfa,
                                     y : yarrayfa,
-                                    type: 'contour'
+                                    type: 'contour',
+                                    colorscale: 'Jet'
                                     }];
                         var layout = {
                                     title: 'Peta Kontur Free Air'
@@ -182,7 +197,8 @@
                                     z : sbaarray,
                                     x : xarraysba,
                                     y : yarraysba,
-                                    type: 'contour'
+                                    type: 'contour',
+                                    colorscale: 'Jet'
                                     }];
                         var layout = {
                                     title: 'Peta Kontur Bouger'

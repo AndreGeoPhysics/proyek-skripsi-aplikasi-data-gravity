@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from django.http import JsonResponse
 from .processing import *
 import plotly
 import plotly.graph_objs as go
@@ -150,3 +151,6 @@ def upload_file(request):
             'form': form,
         }
     return render(request, 'upload-file.html', konteks)
+
+def test(request, current_id):
+    return JsonResponse('title baru', safe=False)
