@@ -5,18 +5,6 @@
     <div class="modal-body row">
         <div class="col-md-6">
             <h3 id='pageTitle'>Workspace</h3>
-            <script>
-                function loadDoc() {
-                    var xhttp = new XMLHttpRequest();
-                    xhttp.onreadystatechange = function() {
-                        if (this.readyState == 4 && this.status == 200) {
-                            document.getElementById('pageTitle').innerHTML = this.responseText;
-                        }
-                    };
-                    xhttp.open("GET", "{% url 'test' work_data.unique_id %}", true);
-                    xhttp.send();
-                }
-            </script>
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
@@ -59,28 +47,7 @@
             </head>
             <body>
                 <div class="fixTableHead">
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>X</th>
-                                <th>Y</th>
-                                <th>Z</th>
-                                <th>FREE AIR ANOMALY</th>
-                                <th>SBA</th>
-                                <th>SVD</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for x, y, z, fa, sba in items %}
-                            <tr>
-                                <td class='x'>{{ x }}</td>
-                                <td class='y'>{{ y }}</td>
-                                <td class='z'>{{ z }}</td>
-                                <td class='fa'>{{ fa }}</td>
-                                <td class='sba'>{{ sba }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
+                    <table class="table table-bordered table-striped" id="mainTable">
                     </table>        
                 </div>
             </body>
@@ -173,7 +140,7 @@
                     </script>
                 </div>
          
-                <div id="SBA" class="tabcontent">
+                <div id="SBA" class="tabcontent"> 
                     <h3>SBA</h3>
                     <div id="sbaDiv"></div>
                     <script>

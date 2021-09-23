@@ -53,6 +53,17 @@ def hapus_file(request, current_id):
     return redirect('dashboard')
 
 @login_required(login_url=settings.LOGIN_URL)
+def get_topo(request, current_id):
+    table_data = GravityTable.objects.get(unique_id=current_id)
+    x, y, z, freeair = dbDecode(table_data)
+    topo_data = {}
+    topo_data['x'] = x
+    topo_data['y'] = y
+    topo_data['z'] = z
+    topo_data['freeair'] = freeair
+    return JsonResponse(topo_data)
+
+@login_required(login_url=settings.LOGIN_URL)
 def get_density(request, current_id):
     table_data = GravityTable.objects.get(unique_id=current_id)
     current_density = table_data.density
@@ -110,16 +121,8 @@ def dashboard(request):
 @login_required(login_url=settings.LOGIN_URL)
 def workspace(request, current_id):
     work_data = GravityTable.objects.get(unique_id=current_id)
-    x , y, z, fa = dbDecode(work_data)
-    if work_data.sba is not None:
-        jsonDec = json.decoder.JSONDecoder()
-        sba = jsonDec.decode(work_data.sba)    
-    else:
-        sba = np.full_like(x, 0)
-    items = zip(x, y, z, fa, sba)
     konteks = {
         'work_data' : work_data,
-        'items' : items
     }
     return render(request, 'workspace.html', konteks)
  
