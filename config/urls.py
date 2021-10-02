@@ -18,6 +18,7 @@ urlpatterns = [
     path('dashboard/workspace/<current_id>/get-bouger', get_bouger, name='get_bouger'),
     path('dashboard/workspace/<current_id>/get-density', get_density, name='get_density'),
     path('dashboard/workspace/<current_id>/test', test, name='test'),
+    path('dashboard/testing', testing, name='testing'),
 ]
 
 if settings.DEBUG:

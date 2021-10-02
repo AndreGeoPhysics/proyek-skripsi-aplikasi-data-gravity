@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<head>
+    <meta charset="utf-8">
+    <title>set timeout</title>
+    <script>
+        function callback(){
+            console.log("success");
+        }
+
+        function buttonClick(){
+            //setTimeout(function(){
+            //    callback();
+            //}, 5000);
+            setInterval(function(){
+                callback();    
+            }, 2000);
+            console.log("success click button");
+        }
+    </script>
+</head>
+<body>
+    <button type='button' onclick="buttonClick()">click me</button>
+</body>
+{% endblock %}

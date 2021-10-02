@@ -15,7 +15,7 @@ xhttp.onreadystatechange = function() {
             temp['y'] = y[i];
             temp['z'] = z[i];
             temp['freeair'] = freeair[i];
-            topo_data.append(temp);
+            topo_data.push(temp);
         }
         function generateTableHead(table, datatabel) {
             let thead = table.createTHead();
@@ -39,11 +39,12 @@ xhttp.onreadystatechange = function() {
             }
         }
         let table = document.getElementById("mainTable");
-        let datatabel = Object.keys(topodata[0]);
-        generateTable(table, topodata);
+        let datatabel = Object.keys(topo_data[0]);
+        generateTable(table, topo_data);
         generateTableHead(table, datatabel);
     }
 };
-
-xhttp.open("GET", "{% url 'get_topo' work_data.unique_id %}", true);
+const splittedPathname = window.location.pathname.split("/");
+const uniqueId = splittedPathname[splittedPathname.length-1];
+xhttp.open("GET", `/dashboard/workspace/${uniqueId}/get-topo`, true);
 xhttp.send();

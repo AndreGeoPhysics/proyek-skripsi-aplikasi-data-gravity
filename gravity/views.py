@@ -127,6 +127,10 @@ def workspace(request, current_id):
     return render(request, 'workspace.html', konteks)
  
 @login_required(login_url=settings.LOGIN_URL)
+def testing(request):
+    return render(request, 'testing.html')
+
+@login_required(login_url=settings.LOGIN_URL)
 def upload_file(request):
     if request.method == 'POST':
         form = FileForm(request.POST, request.FILES)
