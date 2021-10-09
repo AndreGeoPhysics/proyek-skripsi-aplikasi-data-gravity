@@ -20,36 +20,12 @@
                 </tbody>
             </table>
             <br><br>
-                <style>
-                    .fixTableHead {
-                      overflow-y: auto;
-                      height: 300px;
-                    }
-                    .fixTableHead thead th {
-                      position: sticky;
-                      top: 0;
-                      background-color: red;
-                    }
-                    table {
-                      border-collapse: collapse;        
-                      width: 100%;
-                    }
-                    th,
-                    td {
-                      padding: 8px 15px;
-                      border: 2px solid #529432;
-                    }
-                    th {
-                      background: #ABDD93;
-                    }
-                </style>
                 <div class="fixTableHead">
                     <table class="table table-bordered table-striped" id="mainTable">
                     </table>        
                 </div>
         <br>
-        <a href="{% url 'get_density' work_data.unique_id %}" class="btn btn-primary">Hitung Density</a>
-        <a href="{% url 'get_bouger' work_data.unique_id %}" class="btn btn-secondary">Hitung Anomali Bouger</a>
+        <button class="btn btn-secondary" onclick="sbaCalc()">Hitung anomali bouguer</button>
         <a href="/dashboard" class="btn btn-danger">kembali</a>
         </div>
         <div class="col-md-6">
@@ -173,5 +149,10 @@
         </div>
     </div>   
 </div>
+<script src="{% static 'js/tablefunc.js' %}"></script>
 <script src="{% static 'js/table.js' %}"></script>
+<script src="{% static 'js/sba_table.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="{% static 'css/tab.css' %}">
+<link rel="stylesheet" href="{% static 'css/scroll_table.css' %}">
 {% endblock %}

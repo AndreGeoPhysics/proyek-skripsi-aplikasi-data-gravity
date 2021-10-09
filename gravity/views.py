@@ -64,34 +64,27 @@ def get_topo(request, current_id):
     return JsonResponse(topo_data)
 
 @login_required(login_url=settings.LOGIN_URL)
-def get_density(request, current_id):
+def get_bouguer(request, current_id):
     table_data = GravityTable.objects.get(unique_id=current_id)
-    current_density = table_data.density
-    if current_density is None:
-        x, y, z, freeair = dbDecode(table_data)
-        density_data = densitas_parasnis(freeair, z)
-        table_data.density = density_data
-        table_data.save()
-    else:
-        pass
-    return redirect(request.META['HTTP_REFERER'])
-
-@login_required(login_url=settings.LOGIN_URL)
-def get_bouger(request, current_id):
-    table_data = GravityTable.objects.get(unique_id=current_id)
+    x, y, z, freeair = dbDecode(table_data)
     current_density = table_data.density
     current_sba = table_data.sba
     if current_density is None:
-        pass
+        density_data = densitas_parasnis(freeair, z)
+        sba_data = bouguer(freeair, z, density_data)
+        table_data.density = density_data
+        table_data.sba =  sba_data
+        table_data.save()
     elif current_sba is None:
-        x, y, z, freeair = dbDecode(table_data)
-        sba_data = bouger(freeair, z, current_density)
+        sba_data = bouguer(freeair, z, current_density)
         table_data.sba = sba_data
         table_data.save()
     else:
-        pass
-    return redirect(request.META['HTTP_REFERER'])
-    
+        sba_data = current_sba
+    sba_dict = {}
+    sba_dict['sba'] = sba_data
+    return JsonResponse(sba_dict)
+
 @login_required(login_url=settings.LOGIN_URL)
 def sign_up(request):
     if request.POST:
@@ -158,6 +151,3 @@ def upload_file(request):
             'form': form,
         }
     return render(request, 'upload-file.html', konteks)
-
-def test(request, current_id):
-    return JsonResponse('title baru', safe=False)

@@ -3,24 +3,113 @@
 {% block content %}
 <head>
     <meta charset="utf-8">
-    <title>set timeout</title>
+    <title>ajax</title>
     <script>
-        function callback(){
-            console.log("success");
+        function getProductsURL(keyword){
+            return `https://www.blibli.com/backend/search/products?searchTerm=${keyword}`;
         }
 
-        function buttonClick(){
-            //setTimeout(function(){
-            //    callback();
-            //}, 5000);
-            setInterval(function(){
-                callback();    
-            }, 2000);
-            console.log("success click button");
+        function getProducts(keyword){
+            const promise = new Promise(function (resolve, reject){
+                const ajax = new XMLHttpRequest;
+                ajax.onload = function(){
+                    if(ajax.status === 200){
+                        const data = JSON.parse(ajax.responseText);
+                        resolve(data);
+                    } else {
+                        reject(Error("gagal mengambil data produk"));
+                    }
+                };
+
+                const url = getProductsURL(keyword);
+                ajax.open("GET", url);
+                ajax.send();
+            });
+
+            return promise;
+        }
+
+        function getProductsError(){
+            console.log("Error get products");
+            alert("error get products");
+        }
+
+        function clearProducts(){
+            const productUI = document.getElementById("products");
+            productUI.textContent = "";
+        }
+        function displayProducts(data) {
+            data.data.products.forEach(product => displayProduct(product));
+        }
+
+        function displayProduct(product) {
+            const productLi = document.createElement("li");
+            productLi.textContent = product.name;
+
+            const productUl = document.getElementById("products");
+            productUl.appendChild(productLi);
+        }
+
+        function clearTableProducts() {
+            const productUl = document.getElementById("table-products");
+            productUl.textContent = "";
+        }
+
+        function displayTableProducts(data) {
+            const table = document.createElement("table");
+            table.setAttribute("border", 1);
+
+            let index = 0;
+            data.data.products.forEach(product => {
+                table.insertRow(index).insertCell(0).innerText = product.name;
+                index++;
+            });
+
+            const tableProduct = document.getElementById("table-products");
+            tableProduct.appendChild(table);
+        }
+
+        async function buttonClick() {
+            /*
+            const promise = getProducts(document.getElementById("keyword").value);
+            promise
+                .then(function(value) {
+                    return value.data.products;
+                })
+                .then(function(products) {
+                    clearProducts();
+                    products.forEach(function(product){
+                        displayProduct(product);
+                    })
+                })
+                .catch(function(error){
+                    alert(error.message);
+                })
+                .finally(function(){
+                    console.log("selesai menjalankan promise");
+                })
+            */
+            
+            try{
+                const value = await getProducts(document.getElementById("keyword").value);
+                const products = value.data.products;
+                clearProducts();
+                products.forEach(function(product){
+                    displayProduct(product);
+                })
+            }catch (error){
+                alert(error.message)
+            }finally {
+                console.log("selesai memproses async await")
+            }
         }
     </script>
 </head>
 <body>
-    <button type='button' onclick="buttonClick()">click me</button>
+<input type="text" id="keyword">
+<button onclick="buttonClick()">Search Products</button>
+<ul id="products"></ul>
+<div id="table-products"></div>
 </body>
+
 {% endblock %}
