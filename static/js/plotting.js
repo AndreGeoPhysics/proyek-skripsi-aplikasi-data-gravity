@@ -1,27 +1,54 @@
-const zbox = document.querySelectorAll('td.z');
-let zarray = []
-for (let i = 0; i < zbox.length; i++) {
-    zarray.push(zbox[i].innerHTML)
-}
-const xbox = document.querySelectorAll('td.x');
-let xarray = []
-for (let i = 0; i < xbox.length; i++) {
-    xarray.push(xbox[i].innerHTML)
-}
-const ybox = document.querySelectorAll('td.y');
-let yarray = []
-for (let i = 0; i < ybox.length; i++) {
-    yarray.push(ybox[i].innerHTML)
+let elevPlot = () => {
+    let dataplot = JSON.parse(localStorage.getItem('data')); 
+    var data = [{
+        z : dataplot['z'],
+        x : dataplot['x'],
+        y : dataplot['y'],
+        type: 'contour',
+        colorscale: 'Jet'
+        }];
+    var layout = {
+        title: 'Peta Kontur Elevasi'
+        };
+    Plotly.newPlot('elevDiv', data);
 }
 
-var data = [{
-            z : zarray,
-            x : xarray,
-            y : yarray,
+let faPlot = () => {
+    let dataplot = JSON.parse(localStorage.getItem('data')); 
+    var data = [{
+        z : dataplot['freeair'],
+        x : dataplot['x'],
+        y : dataplot['y'],
+        type: 'contour',
+        colorscale: 'Jet'
+        }];
+    var layout = {
+        title: 'Peta Kontur Free Air'
+        };
+    Plotly.newPlot('elevDiv', data);    
+}
+
+let sbaPlot = () => {
+    try {
+        let dataplot = JSON.parse(localStorage.getItem('data')); 
+        let bouguer = JSON.parse(JSON.parse(localStorage.getItem('bouguer'))['sba']);
+        if (bouguer === null) {console.log("empty")}; 
+        var data = [{
+            z : bouguer,
+            x : dataplot['x'],
+            y : dataplot['y'],
             type: 'contour',
             colorscale: 'Jet'
             }];
-var layout = {
-            title: 'Peta Kontur Elevasi'
+        var layout = {
+            title: 'Peta Kontur Bouger'
             };
-Plotly.newPlot('elevDiv', data, layout);
+        Plotly.newPlot('elevDiv', data);            
+    } catch (error) {
+        window.alert("belum ada data");
+    }
+}   
+
+window.onbeforeunload = function() {
+    localStorage.clear();
+}

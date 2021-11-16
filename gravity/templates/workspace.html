@@ -33,119 +33,15 @@
                 <p>Klik pilihan untuk melihat peta kontur:</p>
         
                 <div class="tab">
-                    <button class="tablinks" onclick="openContour(event, 'Elevasi')">Elevasi</button>
-                    <button class="tablinks" onclick="openContour(event, 'Free Air Anomaly')">Free Air Anomaly</button>
-                    <button class="tablinks" onclick="openContour(event, 'SBA')">SBA</button>
-                    <button class="tablinks" onclick="openContour(event, 'SVD')">SVD</button>
+                    <button class="tablinks" onclick="elevPlot()">Elevasi</button>
+                    <button class="tablinks" onclick="faPlot()">Free Air Anomaly</button>
+                    <button class="tablinks" onclick="sbaPlot()">SBA</button>
+                    <button class="tablinks" onclick="">SVD</button>
                 </div>
         
                 <div id="Elevasi" class="tabcontent">
-                    <h3>Elevasi</h3>
                     <div id="elevDiv"></div>
-                    <script>
-                        const zbox = document.querySelectorAll('td.z');
-                        let zarray = []
-                        for (let i = 0; i < zbox.length; i++) {
-                            zarray.push(zbox[i].innerHTML)
-                        }
-                        const xbox = document.querySelectorAll('td.x');
-                        let xarray = []
-                        for (let i = 0; i < xbox.length; i++) {
-                            xarray.push(xbox[i].innerHTML)
-                        }
-                        const ybox = document.querySelectorAll('td.y');
-                        let yarray = []
-                        for (let i = 0; i < ybox.length; i++) {
-                            yarray.push(ybox[i].innerHTML)
-                        }
-
-                        var data = [{
-                                    z : zarray,
-                                    x : xarray,
-                                    y : yarray,
-                                    type: 'contour',
-                                    colorscale: 'Jet'
-                                    }];
-                        var layout = {
-                                    title: 'Peta Kontur Elevasi'
-                                    };
-                        Plotly.newPlot('elevDiv', data, layout);
-                    </script>
-                </div>
-        
-                <div id="Free Air Anomaly" class="tabcontent">
-                    <h3>Free Air Anomaly</h3>
-                    <div id="faDiv"></div>
-                    <script>
-                        const fabox = document.querySelectorAll('td.fa');
-                        let faarray = []
-                        for (let i = 0; i < fabox.length; i++) {
-                            faarray.push(fabox[i].innerHTML)
-                        }
-                        const xboxfa = document.querySelectorAll('td.x');
-                        let xarrayfa = []
-                        for (let i = 0; i < xboxfa.length; i++) {
-                            xarrayfa.push(xboxfa[i].innerHTML)
-                        }
-                        const yboxfa = document.querySelectorAll('td.y');
-                        let yarrayfa = []
-                        for (let i = 0; i < yboxfa.length; i++) {
-                            yarrayfa.push(yboxfa[i].innerHTML)
-                        }
-
-                        var data = [{
-                                    z : faarray,
-                                    x : xarrayfa,
-                                    y : yarrayfa,
-                                    type: 'contour',
-                                    colorscale: 'Jet'
-                                    }];
-                        var layout = {
-                                    title: 'Peta Kontur Free Air'
-                                    };
-                        Plotly.newPlot('faDiv', data, layout);
-                    </script>
-                </div>
-         
-                <div id="SBA" class="tabcontent"> 
-                    <h3>SBA</h3>
-                    <div id="sbaDiv"></div>
-                    <script>
-                        const sbabox = document.querySelectorAll('td.sba');
-                        let sbaarray = []
-                        for (let i = 0; i < sbabox.length; i++) {
-                            sbaarray.push(sbabox[i].innerHTML)
-                        }
-                        let xboxsba = document.querySelectorAll('td.x');
-                        let xarraysba = []
-                        for (let i = 0; i < xboxsba.length; i++) {
-                            xarraysba.push(xboxsba[i].innerHTML)
-                        }
-                        let yboxsba = document.querySelectorAll('td.y');
-                        let yarraysba = []
-                        for (let i = 0; i < yboxsba.length; i++) {
-                            yarraysba.push(yboxsba[i].innerHTML)
-                        }
-
-                        var data = [{
-                                    z : sbaarray,
-                                    x : xarraysba,
-                                    y : yarraysba,
-                                    type: 'contour',
-                                    colorscale: 'Jet'
-                                    }];
-                        var layout = {
-                                    title: 'Peta Kontur Bouger'
-                                    };
-                        Plotly.newPlot('sbaDiv', data, layout);
-                    </script>
-                </div>
-
-                <div id="SVD" class="tabcontent">
-                    <h3>SVD</h3>
-                    <p>empty</p>
-                </div>
-            <script src="{% static 'js/tab_button.js' %}"></script>       
+                </div>       
         </div>
     </div>   
 </div>
@@ -155,4 +51,5 @@
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 <link rel="stylesheet" href="{% static 'css/tab.css' %}">
 <link rel="stylesheet" href="{% static 'css/scroll_table.css' %}">
+<script src="{% static 'js/plotting.js' %}"defer></script>
 {% endblock %}

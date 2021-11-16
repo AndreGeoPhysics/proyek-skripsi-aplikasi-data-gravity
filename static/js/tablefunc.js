@@ -19,3 +19,8 @@ function generateTable(table, datatabel) {
         }
     }
 };
+
+function clearTable(key) {
+    const table = document.getElementById(key);
+    table.textContent = "";
+}

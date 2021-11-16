@@ -14,7 +14,7 @@ def densitas_parasnis(freeair, elevasi):
     freeair = np.transpose(np.array([freeair]))
     elevasi = np.transpose(np.array([elevasi]))
     konstanta = 1/(.04192)
-    return float(konstanta * np.transpose(elevasi).dot(np.linalg.pinv(elevasi.dot(np.transpose(elevasi)), hermitian=True)).dot(freeair))
+    return float(konstanta * np.transpose(elevasi).dot(np.linalg.pinv(elevasi.dot(np.transpose(elevasi)))).dot(freeair))
 
 def bouguer(freeair, elevasi, densitas):
     freeair = np.transpose(np.array([freeair]))
