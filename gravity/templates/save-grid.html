@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Input Grid
+                </div>
+                <div class="card-body"></div>
+                {% if pesan %}
+                    <div class="alert alert-success">{{ pesan }}</div>
+                {% endif %}
+                <form action="{% url 'save_grid' current_id %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+ 
+                    {{ form.as_p }}
+            
+                    <button class="btn btn-primary">selesai</button>
+                    <a href="{% url 'workspace' current_id %}" class="btn btn-danger">kembali</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

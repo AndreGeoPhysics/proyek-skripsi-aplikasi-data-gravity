@@ -19,13 +19,15 @@
                     </tr>
                 </tbody>
             </table>
-            <br><br>
+            <a href="{% url 'save_grid' work_data.unique_id %}" class="btn btn-secondary">masukkan grid</a>
                 <div class="fixTableHead">
                     <table class="table table-bordered table-striped" id="mainTable">
                     </table>        
                 </div>
         <br>
-        <button class="btn btn-secondary" onclick="sbaCalc()">Hitung anomali bouguer</button>
+        <button class="btn btn-primary" onclick="sbaCalc()">Koreksi Bouguer</button>
+        <button class="btn btn-primary" onclick="sbaGridCalc()">Peta Anomali Bouguer</button>
+        <button class="btn btn-primary" onclick="spectralCalc()">Analisis Spektral</button>
         <a href="/dashboard" class="btn btn-danger">kembali</a>
         </div>
         <div class="col-md-6">
@@ -36,6 +38,9 @@
                     <button class="tablinks" onclick="elevPlot()">Elevasi</button>
                     <button class="tablinks" onclick="faPlot()">Free Air Anomaly</button>
                     <button class="tablinks" onclick="sbaPlot()">SBA</button>
+                    <button class="tablinks" onclick="spectrumplot()">Spektral Analisis</button>
+                    <button class="tablinks" onclick="">SBA</button>
+                    <button class="tablinks" onclick="">FHD</button>
                     <button class="tablinks" onclick="">SVD</button>
                 </div>
         
@@ -48,6 +53,8 @@
 <script src="{% static 'js/tablefunc.js' %}"></script>
 <script src="{% static 'js/table.js' %}"></script>
 <script src="{% static 'js/sba_table.js' %}"></script>
+<script src="{% static 'js/sbamap.js' %}"></script>
+<script src="{% static 'js/spectrum.js' %}"></script>
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 <link rel="stylesheet" href="{% static 'css/tab.css' %}">
 <link rel="stylesheet" href="{% static 'css/scroll_table.css' %}">

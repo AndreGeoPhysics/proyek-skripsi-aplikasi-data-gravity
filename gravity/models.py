@@ -14,7 +14,23 @@ class GravityTable(models.Model):
     freeair = models.TextField(null=True)
     density = models.TextField(null=True)
     sba = models.TextField(null=True)
-    svd = models.TextField(null=True)
 
     def __str__(self):
         return self.unique_id
+
+class GridTable(models.Model):
+    grid_ref = models.OneToOneField(GravityTable, primary_key=True, on_delete=models.CASCADE)
+    n_grid = models.IntegerField(null=True)
+    sample = models.IntegerField(null=True)
+    x_grid = models.TextField(null=True)
+    y_grid = models.TextField(null=True)
+    sba_interpolate = models.TextField(null=True)
+    k = models.TextField(null=True)
+    lnA_1 = models.TextField(null=True)
+    lnA_2 = models.TextField(null=True)
+    lnA_3 =  models.TextField(null=True)
+
+    def __str__(self): 
+        return "%s grid" % self.grid_ref.unique_id
+
+    
