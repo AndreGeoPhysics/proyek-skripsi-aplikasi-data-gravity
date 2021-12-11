@@ -118,7 +118,6 @@ def bouguer_map(request, current_id):
     jsonDec = json.decoder.JSONDecoder()
     sba = jsonDec.decode(table_data.sba)
     n = grid_data.n_grid
-    print(n)
     x_grid, y_grid, sba_grid = sbagrid(x, y, sba, n)
     grid_data.x_grid = x_grid 
     grid_data.y_grid = y_grid
@@ -137,11 +136,10 @@ def bouguer_map(request, current_id):
     jsonDec = json.decoder.JSONDecoder()
     sba = jsonDec.decode(table_data.sba)
     n = grid_data.n_grid
-    print(n)
     x_grid, y_grid, sba_grid = sbagrid(x, y, sba, n)
     grid_data.x_grid = x_grid 
     grid_data.y_grid = y_grid
-    grid_data.sba_interpolate = sba_grid
+    grid_data.sba_interpolate = json.dumps(sba_grid.tolist())
     grid_data.save()
     sbagrid_dict = {}
     sbagrid_dict['sbagrid'] = json.dumps(sba_grid.tolist())
@@ -154,7 +152,7 @@ def get_spectrum(request, current_id):
     grid_data = GridTable.objects.get(grid_ref=table_data)
     x, y, z, freeair = dbDecode(table_data)
     jsonDec = json.decoder.JSONDecoder()
-    sba_interpolasi = grid_data.sba_interpolate
+    sba_interpolasi = jsonDec.decode(grid_data.sba_interpolate)
     n = grid_data.n_grid
     sample = grid_data.sample
     k, lnA_1, lnA_2, lnA_3 = spectral_analysis(sba_interpolasi, n, sample)
@@ -164,13 +162,36 @@ def get_spectrum(request, current_id):
     grid_data.lnA_3 = lnA_3
     grid_data.save()
     n_half = n//2
-    print(n_half)
     spectrum_dict = {}
     spectrum_dict['k'] = json.dumps(k[:n_half].tolist())
     spectrum_dict['lnA_1'] = json.dumps(lnA_1[:n_half].tolist())
     spectrum_dict['lnA_2'] = json.dumps(lnA_2[:n_half].tolist())
     spectrum_dict['lnA_3'] = json.dumps(lnA_3[:n_half].tolist())
     return JsonResponse(spectrum_dict)
+
+def get_fhd(request, current_id):
+    table_data = GravityTable.objects.get(unique_id=current_id)
+    grid_data = GridTable.objects.get(grid_ref=table_data)
+    x, y, z, freeair = dbDecode(table_data)
+    jsonDec = json.decoder.JSONDecoder()
+    sba_interpolasi = jsonDec.decode(grid_data.sba_interpolate)
+    FHD = fhd(sba_interpolasi)
+    fhd_dict = {}
+    fhd_dict['fhd'] = json.dumps(FHD.tolist())
+    return JsonResponse(fhd_dict)
+
+def get_svd(request, current_id):
+    table_data = GravityTable.objects.get(unique_id=current_id)
+    grid_data = GridTable.objects.get(grid_ref=table_data)
+    x, y, z, freeair = dbDecode(table_data)
+    jsonDec = json.decoder.JSONDecoder()
+    sba_interpolasi = jsonDec.decode(grid_data.sba_interpolate)
+    elkins, rosenbach, henderson = svd(sba_interpolasi)
+    svd_dict = {}
+    svd_dict['elkins'] = json.dumps(elkins.tolist())
+    svd_dict['rosenbach'] = json.dumps(rosenbach.tolist())
+    svd_dict['henderson'] = json.dumps(henderson.tolist())
+    return JsonResponse(svd_dict)
 
 @login_required(login_url=settings.LOGIN_URL)
 def sign_up(request):
@@ -216,7 +237,6 @@ def upload_file(request):
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
             nama_user = request.user
-            print(nama_user)
             nama = request.POST['nama_input']
             delim = request.POST['delimiter']
             uploaded_data = request.FILES['file_gravity']

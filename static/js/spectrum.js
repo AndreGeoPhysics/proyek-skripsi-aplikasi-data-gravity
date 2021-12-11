@@ -2,6 +2,7 @@ function spectralCalc(){
     var xhttp = new XMLHttpRequest();
     try{
         xhttp.onload = function() {
+            localStorage.clear();
             localStorage.setItem('spectrumdict', this.responseText);
         };    
     } catch (error){
