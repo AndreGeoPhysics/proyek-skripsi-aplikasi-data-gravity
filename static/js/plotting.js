@@ -1,62 +1,43 @@
+let mapPlot = (x, y, z, title) => {
+    try{
+            var data = [{
+                z : z,
+                x : x,
+                y : y,
+                type: 'contour',
+                colorscale: 'Jet',
+                contours: {
+                    coloring: 'heatmap',
+                    showlabels: true,
+                    labelfont: {
+                    family: 'Raleway',
+                    size: 12,
+                    color: 'white',
+                        }
+                    }
+                ,}];
+            var layout = {
+                title: title
+                };
+            Plotly.newPlot('elevDiv', data, layout);
+    }  catch (error) {
+        window.alert("belum ada data")
+    }              
+}   
+
 let elevPlot = () => {
-    let dataplot = JSON.parse(localStorage.getItem('data')); 
-    var data = [{
-        z : dataplot['z'],
-        x : dataplot['x'],
-        y : dataplot['y'],
-        type: 'contour',
-        colorscale: 'Jet'
-        }];
-    var layout = {
-        title: 'Peta Kontur Elevasi'
-        };
-    Plotly.newPlot('elevDiv', data, layout);
+    let x = JSON.parse(JSON.parse(localStorage.getItem('data'))['x_grid']);
+    let y = JSON.parse(JSON.parse(localStorage.getItem('data'))['y_grid']);
+    let z = JSON.parse(JSON.parse(localStorage.getItem('data'))['z_grid']);
+    mapPlot(x, y, z, "Peta Kontur Elevasi");
 }
 
 let faPlot = () => {
-    let dataplot = JSON.parse(localStorage.getItem('data')); 
-    var data = [{
-        z : dataplot['freeair'],
-        x : dataplot['x'],
-        y : dataplot['y'],
-        type: 'contour',
-        colorscale: 'Jet'
-        }];
-    var layout = {
-        title: 'Peta Kontur Free Air'
-        };
-    Plotly.newPlot('elevDiv', data, layout);    
+    let x = JSON.parse(JSON.parse(localStorage.getItem('data'))['x_grid']);
+    let y = JSON.parse(JSON.parse(localStorage.getItem('data'))['y_grid']);
+    let fa = JSON.parse(JSON.parse(localStorage.getItem('data'))['fa_grid']);
+    mapPlot(x, y, fa, "Peta Kontur FreeAir");
 }
-
-let sbaPlot = (bouguer, x, y) => {
-    try {
-        let bouguer = JSON.parse(JSON.parse(localStorage.getItem('sbagrid'))['sbagrid']);
-        let x = JSON.parse(JSON.parse(localStorage.getItem('sbagrid'))['xgrid']);
-        let y = JSON.parse(JSON.parse(localStorage.getItem('sbagrid'))['ygrid']);
-        var data = [{
-            z : bouguer,
-            x : x,
-            y : y,
-            type: 'contour',
-            colorscale: 'Jet',
-            contours: {
-                coloring: 'heatmap',
-                showlabels: true,
-                labelfont: {
-                  family: 'Raleway',
-                  size: 12,
-                  color: 'white',
-                    }
-                }
-            ,}];
-        var layout = {
-            title: 'Peta Kontur Bouguer'
-            };
-        Plotly.newPlot('elevDiv', data, layout);            
-    } catch (error) {
-        window.alert("belum ada data");
-    }
-}   
 
 let spectrumplot = () =>  {
     try {
@@ -108,57 +89,6 @@ let spectrumplot = () =>  {
         window.alert("belum ada data")
     }
 }  
-
-let fhdPlot = (x, y, fhd) => {
-        var data = [{
-            z : fhd,
-            x : x,
-            y : y,
-            type: 'contour',
-            colorscale: 'Jet',
-            contours: {
-                coloring: 'heatmap',
-                showlabels: true,
-                labelfont: {
-                  family: 'Raleway',
-                  size: 12,
-                  color: 'white',
-                    }
-                }
-            ,}];
-        var layout = {
-            title: 'Peta FHD'
-            };
-        Plotly.newPlot('elevDiv', data, layout);            
-    
-}   
-
-let svdPlot = (x, y, elkins) =>  {
-    try {
-        var data = [{
-            z : elkins,
-            x : x,
-            y : y,
-            type: 'contour',
-            colorscale: 'Jet',
-            contours: {
-                coloring: 'heatmap',
-                showlabels: true,
-                labelfont: {
-                  family: 'Raleway',
-                  size: 12,
-                  color: 'white',
-                    }
-                }
-            ,}];
-
-        Plotly.newPlot('elevDiv', data);
-    
-    } catch (error) {
-        window.alert("belum ada data")
-    }
-}  
-
 
 window.onbeforeunload = function() {
     localStorage.clear();

@@ -2,7 +2,10 @@ function sbaGridCalc(){
     var xhttp = new XMLHttpRequest();
     try{
         xhttp.onload = function() {
-            localStorage.setItem('sbagrid', this.responseText);
+            let bouguer = JSON.parse(JSON.parse(this.responseText)['sbagrid']);
+            let x = JSON.parse(JSON.parse(localStorage.getItem('data'))['x_grid']);
+            let y = JSON.parse(JSON.parse(localStorage.getItem('data'))['y_grid']);    
+            mapPlot(x, y, bouguer, "Peta Anomali Bouguer");
         };    
     } catch (error){
         window.alert("belum ada data");

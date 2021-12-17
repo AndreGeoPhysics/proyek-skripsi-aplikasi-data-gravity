@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import GravityTable, GridTable
+from .models import GravityTable, GridTable, SpectralTable
 
 @admin.register(GravityTable)
 class GravityTableAdmin(admin.ModelAdmin):
@@ -7,4 +7,8 @@ class GravityTableAdmin(admin.ModelAdmin):
     
 @admin.register(GridTable)
 class GridTableAdmin(admin.ModelAdmin):
-    list_display = ('grid_ref', 'n_grid', 'x_grid', 'y_grid', 'sba_interpolate', 'k', 'lnA_1', 'lnA_2', 'lnA_3')
+    list_display = ('grid_ref', 'n_grid', 'x_grid', 'y_grid', 'sba_interpolate', 'elev_interpolate', 'fa_interpolate')
+
+@admin.register(SpectralTable)
+class SpectralTableAdmin(admin.ModelAdmin):
+    list_display = ('k', 'lnA_1', 'lnA_2', 'lnA_3')

@@ -3,10 +3,9 @@ function svdCalc(){
     try{
         xhttp.onload = function() {
             let elkins = JSON.parse(JSON.parse(this.responseText)['elkins']);
-            let x = JSON.parse(JSON.parse(localStorage.getItem('sbagrid'))['xgrid']);
-            let y = JSON.parse(JSON.parse(localStorage.getItem('sbagrid'))['ygrid']); 
-            svdPlot(x, y, elkins)
-
+            let x = JSON.parse(JSON.parse(localStorage.getItem('data'))['x_grid']);
+            let y = JSON.parse(JSON.parse(localStorage.getItem('data'))['y_grid']); 
+            mapPlot(x, y, elkins, "Peta SVD Elkins");
         };    
     } catch (error){
         window.alert("belum ada data");

@@ -21,7 +21,6 @@ urlpatterns = [
     path('dashboard/workspace/<current_id>/get-fhd', get_fhd, name='get_fhd'),
     path('dashboard/workspace/<current_id>/get-svd', get_svd, name='get_svd'),
     path('save-grid/<current_id>', save_grid, name='save_grid'),
-    path('dashboard/testing', testing, name='testing'),
 ]
 
 if settings.DEBUG:

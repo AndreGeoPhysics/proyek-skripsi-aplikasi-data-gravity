@@ -25,7 +25,7 @@ def handle_file(file_input, delim=','):
     except:
         return file_input, False, 'data tidak terbaca'
 
-def gravitymodelbuilder(nama_user, nama, df):
+def gravitymodelbuilder(nama_user, nama, df, ngrid, sample_interval):
     user_id = nama_user
     nama_proyek = nama
     x = json.dumps(df.iloc[:,0].values.tolist())
@@ -34,6 +34,8 @@ def gravitymodelbuilder(nama_user, nama, df):
     freeair = json.dumps(df.iloc[:,3].values.tolist())
     data = GravityTable(user_id=user_id, nama_proyek=nama_proyek, x=x, y=y, z=z, freeair=freeair)
     data.save()
+    grid_data = GridTable(grid_ref=data, n_grid=ngrid, sample=sample_interval)
+    grid_data.save()
     return data.unique_id  
 
 def handle_uploaded_file(f, db_id):
@@ -55,32 +57,36 @@ def hapus_file(request, current_id):
 @login_required(login_url=settings.LOGIN_URL)
 def get_topo(request, current_id):
     table_data = GravityTable.objects.get(unique_id=current_id)
+    grid_data = GridTable.objects.get(grid_ref=table_data)
     x, y, z, freeair = dbDecode(table_data)
+    n = grid_data.n_grid
+    x_grid, y_grid, z_grid = grid(x, y, z, n)
+    x_grid, y_grid, fa_grid = grid(x, y, freeair, n)
+    grid_data.x_grid = x_grid 
+    grid_data.y_grid = y_grid
+    grid_data.z_interpolate = z_grid
+    grid_data.fa_interpolate = fa_grid
+    grid_data.save()
     topo_data = {}
     topo_data['x'] = x
     topo_data['y'] = y
     topo_data['z'] = z
     topo_data['freeair'] = freeair
+    topo_data['x_grid'] = json.dumps(x_grid.tolist())
+    topo_data['y_grid'] = json.dumps(y_grid.tolist())
+    topo_data['z_grid'] = json.dumps(z_grid.tolist())
+    topo_data['fa_grid'] = json.dumps(fa_grid.tolist())
     return JsonResponse(topo_data)
 
 @login_required(login_url=settings.LOGIN_URL)
 def get_bouguer(request, current_id):
     table_data = GravityTable.objects.get(unique_id=current_id)
     x, y, z, freeair = dbDecode(table_data)
-    current_density = table_data.density
-    current_sba = table_data.sba
-    if current_density is None:
-        density_data = densitas_parasnis(freeair, z)
-        sba_data = bouguer(freeair, z, density_data)
-        table_data.density = density_data
-        table_data.sba =  sba_data
-        table_data.save()
-    elif current_sba is None:
-        sba_data = bouguer(freeair, z, current_density)
-        table_data.sba = sba_data
-        table_data.save()
-    else:
-        sba_data = current_sba
+    density_data = densitas_parasnis(freeair, z)
+    sba_data = bouguer(freeair, z, density_data)
+    table_data.density = density_data
+    table_data.sba =  sba_data
+    table_data.save()
     sba_dict = {}
     sba_dict['sba'] = sba_data
     return JsonResponse(sba_dict)
@@ -93,7 +99,9 @@ def save_grid(request, current_id):
             ngrid = request.POST['ngrid']
             sample_interval = int(request.POST['sample_interval'])
             gravity_data = GravityTable.objects.get(unique_id=current_id)
-            grid_data = GridTable(grid_ref=gravity_data, n_grid=ngrid, sample=sample_interval)
+            grid_data = GridTable.objects.get(grid_ref=gravity_data)
+            grid_data.n_grid = ngrid
+            grid_data.sample = sample_interval
             grid_data.save()
             pesan = "Input berhasil disimpan!"
             konteks = {
@@ -118,35 +126,15 @@ def bouguer_map(request, current_id):
     jsonDec = json.decoder.JSONDecoder()
     sba = jsonDec.decode(table_data.sba)
     n = grid_data.n_grid
-    x_grid, y_grid, sba_grid = sbagrid(x, y, sba, n)
-    grid_data.x_grid = x_grid 
-    grid_data.y_grid = y_grid
-    grid_data.sba_interpolate = sba_grid
-    grid_data.save()
-    sbagrid_dict = {}
-    sbagrid_dict['sbagrid'] = json.dumps(sba_grid.tolist())
-    sbagrid_dict['xgrid'] = json.dumps(x_grid.tolist())
-    sbagrid_dict['ygrid'] = json.dumps(y_grid.tolist())
-    return JsonResponse(sbagrid_dict)
- 
-def bouguer_map(request, current_id):
-    table_data = GravityTable.objects.get(unique_id=current_id)
-    grid_data = GridTable.objects.get(grid_ref=table_data)
-    x, y, z, freeair = dbDecode(table_data)
-    jsonDec = json.decoder.JSONDecoder()
-    sba = jsonDec.decode(table_data.sba)
-    n = grid_data.n_grid
-    x_grid, y_grid, sba_grid = sbagrid(x, y, sba, n)
+    x_grid, y_grid, sba_grid = grid(x, y, sba, n)
     grid_data.x_grid = x_grid 
     grid_data.y_grid = y_grid
     grid_data.sba_interpolate = json.dumps(sba_grid.tolist())
     grid_data.save()
     sbagrid_dict = {}
     sbagrid_dict['sbagrid'] = json.dumps(sba_grid.tolist())
-    sbagrid_dict['xgrid'] = json.dumps(x_grid.tolist())
-    sbagrid_dict['ygrid'] = json.dumps(y_grid.tolist())
     return JsonResponse(sbagrid_dict)
-
+ 
 def get_spectrum(request, current_id):
     table_data = GravityTable.objects.get(unique_id=current_id)
     grid_data = GridTable.objects.get(grid_ref=table_data)
@@ -156,11 +144,8 @@ def get_spectrum(request, current_id):
     n = grid_data.n_grid
     sample = grid_data.sample
     k, lnA_1, lnA_2, lnA_3 = spectral_analysis(sba_interpolasi, n, sample)
-    grid_data.k = k 
-    grid_data.lnA_1 = lnA_1
-    grid_data.lnA_2 = lnA_2
-    grid_data.lnA_3 = lnA_3
-    grid_data.save()
+    spectral_data = SpectralTable(spectral_ref=grid_data, k=k, lnA_1=lnA_1, lnA_2=lnA_2, lnA_3=lnA_3)
+    spectral_data.save()
     n_half = n//2
     spectrum_dict = {}
     spectrum_dict['k'] = json.dumps(k[:n_half].tolist())
@@ -228,10 +213,6 @@ def workspace(request, current_id):
     return render(request, 'workspace.html', konteks)
  
 @login_required(login_url=settings.LOGIN_URL)
-def testing(request):
-    return render(request, 'testing.html')
-
-@login_required(login_url=settings.LOGIN_URL)
 def upload_file(request):
     if request.method == 'POST':
         form = FileForm(request.POST, request.FILES)
@@ -239,10 +220,12 @@ def upload_file(request):
             nama_user = request.user
             nama = request.POST['nama_input']
             delim = request.POST['delimiter']
+            ngrid = request.POST['ngrid']
+            sample_interval = request.POST['sample_interval']
             uploaded_data = request.FILES['file_gravity']
             file_df, check, pesan = handle_file(uploaded_data, delim)
             if check == True:
-                model_id = gravitymodelbuilder(nama_user, nama, file_df)
+                model_id = gravitymodelbuilder(nama_user, nama, file_df, ngrid, sample_interval)
                 handle_uploaded_file(uploaded_data, model_id)
             else:
                 pass

@@ -1,13 +1,5 @@
 from django import forms
 
-class FileForm(forms.Form):
-    nama_input = forms.CharField(max_length=100)
-    delimiter = forms.CharField(max_length=100)
-    file_gravity = forms.FileField()
-
-    def __str__(self):
-        return self.nama_input
-
 GRID_CHOICES =(
     ("2", "2"),
     ("4", "4"),
@@ -19,6 +11,16 @@ GRID_CHOICES =(
     ("256", "256"),
     ("512", "512"),
 )
+
+class FileForm(forms.Form):
+    nama_input = forms.CharField(max_length=100)
+    delimiter = forms.CharField(max_length=100)
+    file_gravity = forms.FileField()
+    ngrid = forms.ChoiceField(label='jumlah grid', choices=GRID_CHOICES)
+    sample_interval = forms.IntegerField(label='interval sampel', max_value=1000)
+
+    def __str__(self):
+        return self.nama_input
 
 class GridForm(forms.Form):
     ngrid = forms.ChoiceField(label='jumlah grid', choices=GRID_CHOICES)

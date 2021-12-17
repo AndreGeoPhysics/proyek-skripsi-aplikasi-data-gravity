@@ -55,14 +55,14 @@ def svd_henderson(input_array):
     svdhend = convolve2d(input_array,matrix_henderson,mode='same',boundary='symm')
     return svdhend
 
-def sbagrid(x, y, sba, n):
+def grid(x, y, sba, n):
     ngrid = n 
     x_grid= np.linspace(np.min(x), np.max(x), ngrid)
     y_grid= np.linspace(np.min(y), np.max(y), ngrid)
     x_meshgrid, y_meshgrid = np.meshgrid(x_grid, y_grid)
     interpolasi = inter.Rbf(x, y, sba, method='cubic')
-    sba_interpolasi = interpolasi(x_meshgrid, y_meshgrid)
-    return x_grid, y_grid, sba_interpolasi
+    titik_interpolasi = interpolasi(x_meshgrid, y_meshgrid)
+    return x_grid, y_grid, titik_interpolasi
 
 def spectral_analysis(sba_interpolasi, n, sample):
     spec_x = np.arange(1, n+1)

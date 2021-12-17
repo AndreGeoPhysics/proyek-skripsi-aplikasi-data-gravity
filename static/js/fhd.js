@@ -3,10 +3,9 @@ function fhdCalc(){
     try{
         xhttp.onload = function() {
             let fhd = JSON.parse(JSON.parse(this.responseText)['fhd']);
-            console.log(fhd);
-            let x = JSON.parse(JSON.parse(localStorage.getItem('sbagrid'))['xgrid']);
-            let y = JSON.parse(JSON.parse(localStorage.getItem('sbagrid'))['ygrid']); 
-            fhdPlot(x, y, fhd)
+            let x = JSON.parse(JSON.parse(localStorage.getItem('data'))['x_grid']);
+            let y = JSON.parse(JSON.parse(localStorage.getItem('data'))['y_grid']); 
+            mapPlot(x, y, fhd, "Peta FHD");
         };    
     } catch (error){
         window.alert("belum ada data");

@@ -2,7 +2,7 @@ function sbaCalc(){
     var xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
         localStorage.setItem('bouguer', this.responseText);
-        let bouguer = JSON.parse(JSON.parse(this.responseText)['sba']);
+        let bouguer = JSON.parse(this.responseText)['sba'];
         let data = JSON.parse(localStorage.getItem('data'));
         let x = data['x'];
         let y = data['y'];

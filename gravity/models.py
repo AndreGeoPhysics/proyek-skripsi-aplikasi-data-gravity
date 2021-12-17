@@ -21,16 +21,22 @@ class GravityTable(models.Model):
 class GridTable(models.Model):
     grid_ref = models.OneToOneField(GravityTable, primary_key=True, on_delete=models.CASCADE)
     n_grid = models.IntegerField(null=True)
-    sample = models.IntegerField(null=True)
+    sample = models.IntegerField(null=True) 
     x_grid = models.TextField(null=True)
     y_grid = models.TextField(null=True)
     sba_interpolate = models.TextField(null=True)
+    elev_interpolate = models.TextField(null=True)
+    fa_interpolate = models.TextField(null=True)
+
+    def __str__(self): 
+        return "%s grid" % self.grid_ref.unique_id
+
+class SpectralTable(models.Model):
+    spectral_ref = models.OneToOneField(GridTable, primary_key=True, on_delete=models.CASCADE)
     k = models.TextField(null=True)
     lnA_1 = models.TextField(null=True)
     lnA_2 = models.TextField(null=True)
     lnA_3 =  models.TextField(null=True)
 
-    def __str__(self): 
-        return "%s grid" % self.grid_ref.unique_id
-
-    
+    def _str_(self):
+        return "%s nilai spektral" % self.grid_ref.unique_id
