@@ -135,25 +135,6 @@ def bouguer_map(request, current_id):
     sbagrid_dict['sbagrid'] = json.dumps(sba_grid.tolist())
     return JsonResponse(sbagrid_dict)
  
-def get_spectrum(request, current_id):
-    table_data = GravityTable.objects.get(unique_id=current_id)
-    grid_data = GridTable.objects.get(grid_ref=table_data)
-    x, y, z, freeair = dbDecode(table_data)
-    jsonDec = json.decoder.JSONDecoder()
-    sba_interpolasi = jsonDec.decode(grid_data.sba_interpolate)
-    n = grid_data.n_grid
-    sample = grid_data.sample
-    k, lnA_1, lnA_2, lnA_3 = spectral_analysis(sba_interpolasi, n, sample)
-    spectral_data = SpectralTable(spectral_ref=grid_data, k=k, lnA_1=lnA_1, lnA_2=lnA_2, lnA_3=lnA_3)
-    spectral_data.save()
-    n_half = n//2
-    spectrum_dict = {}
-    spectrum_dict['k'] = json.dumps(k[:n_half].tolist())
-    spectrum_dict['lnA_1'] = json.dumps(lnA_1[:n_half].tolist())
-    spectrum_dict['lnA_2'] = json.dumps(lnA_2[:n_half].tolist())
-    spectrum_dict['lnA_3'] = json.dumps(lnA_3[:n_half].tolist())
-    return JsonResponse(spectrum_dict)
-
 def get_fhd(request, current_id):
     table_data = GravityTable.objects.get(unique_id=current_id)
     grid_data = GridTable.objects.get(grid_ref=table_data)
@@ -177,6 +158,17 @@ def get_svd(request, current_id):
     svd_dict['rosenbach'] = json.dumps(rosenbach.tolist())
     svd_dict['henderson'] = json.dumps(henderson.tolist())
     return JsonResponse(svd_dict)
+
+def get_gauss(request, current_id):
+    table_data = GravityTable.objects.get(unique_id=current_id)
+    grid_data = GridTable.objects.get(grid_ref=table_data)
+    x, y, z, freeair = dbDecode(table_data)
+    jsonDec = json.decoder.JSONDecoder()
+    sba_interpolasi = jsonDec.decode(grid_data.sba_interpolate)
+    gauss = gaussian(sba_interpolasi)
+    gauss_dict = {}
+    gauss_dict['gauss'] = json.dumps(gauss.tolist())
+    return JsonResponse(gauss_dict)
 
 @login_required(login_url=settings.LOGIN_URL)
 def sign_up(request):
@@ -207,8 +199,10 @@ def dashboard(request):
 @login_required(login_url=settings.LOGIN_URL)
 def workspace(request, current_id):
     work_data = GravityTable.objects.get(unique_id=current_id)
+    grid_data = GridTable.objects.get(grid_ref=work_data)
     konteks = {
         'work_data' : work_data,
+        'grid_data' :  grid_data,
     }
     return render(request, 'workspace.html', konteks)
  
@@ -241,3 +235,23 @@ def upload_file(request):
             'form': form,
         }
     return render(request, 'upload-file.html', konteks)
+
+
+# def get_spectrum(request, current_id):
+#     table_data = GravityTable.objects.get(unique_id=current_id)
+#     grid_data = GridTable.objects.get(grid_ref=table_data)
+#     x, y, z, freeair = dbDecode(table_data)
+#     jsonDec = json.decoder.JSONDecoder()
+#     sba_interpolasi = jsonDec.decode(grid_data.sba_interpolate)
+#     n = grid_data.n_grid
+#     sample = grid_data.sample
+#     k, lnA_1, lnA_2, lnA_3 = spectral_analysis(sba_interpolasi, n, sample)
+#     spectral_data = SpectralTable(spectral_ref=grid_data, k=k, lnA_1=lnA_1, lnA_2=lnA_2, lnA_3=lnA_3)
+#     spectral_data.save()
+#     n_half = n//2
+#     spectrum_dict = {}
+#     spectrum_dict['k'] = json.dumps(k[:n_half].tolist())
+#     spectrum_dict['lnA_1'] = json.dumps(lnA_1[:n_half].tolist())
+#     spectrum_dict['lnA_2'] = json.dumps(lnA_2[:n_half].tolist())
+#     spectrum_dict['lnA_3'] = json.dumps(lnA_3[:n_half].tolist())
+#     return JsonResponse(spectrum_dict)

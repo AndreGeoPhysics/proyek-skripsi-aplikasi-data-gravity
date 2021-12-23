@@ -40,7 +40,7 @@ def svd_elkins(input_array):
 def svd_rosenbach(input_array):
     matrix_rosenbach = np.array([[0.00000,0.0416,0.00000,0.0416,0.00000],
                                  [0.0416,-0.3332,-0.7500,-0.3332,0.0416],
-                                 [0.00000,-0.7500,1.0668,-0.7500,0.0000],
+                                 [0.00000,-0.7500,4.0000,-0.7500,0.0000],
                                  [0.0416,-0.3332,-0.7500,-0.3332,0.0416],
                                  [0.00000,0.0416,0.00000,0.0416,0.00000]])
     svdrosen = convolve2d(input_array,matrix_rosenbach,mode='same',boundary='symm')
@@ -49,11 +49,20 @@ def svd_rosenbach(input_array):
 def svd_henderson(input_array):
     matrix_henderson = np.array([[0.00000,0.0000,-0.0838,0.00000,0.00000],
                                  [0.00000,1.00000,-2.6667,1.00000,0.0000],
-                                 [-0.0838,-2.6667,17.000,-2.6667,-0.0838],
+                                 [-0.0838,-2.6667,7.0000,-2.6667,-0.0838],
                                  [0.0000,1.00000,-2.6667,1.00000,0.00000],
                                  [0.00000,0.00000,-0.0838,0.0000,0.00000]])
     svdhend = convolve2d(input_array,matrix_henderson,mode='same',boundary='symm')
     return svdhend
+
+def gaussian(input_array):
+    matrix_gaussian = np.array([[0.000335463,0.006737947,0.018315639,0.006737947,0.000335463],
+                                [0.006737947,0.135335283,0.367879441,0.135335283,0.006737947],
+                                [0.018315639,0.367879441,1,0.367879441,0.018315639],
+                                [0.006737947,0.135335283,0.367879441,0.135335283,0.006737947],
+                                [0.000335463,0.006737947,0.018315639,0.006737947,0.000335463]])
+    gaussian = convolve2d(input_array,matrix_gaussian,mode='same',boundary='symm')
+    return gaussian
 
 def grid(x, y, sba, n):
     ngrid = n 
@@ -63,6 +72,27 @@ def grid(x, y, sba, n):
     interpolasi = inter.Rbf(x, y, sba, method='cubic')
     titik_interpolasi = interpolasi(x_meshgrid, y_meshgrid)
     return x_grid, y_grid, titik_interpolasi
+
+def fhd(sba_interpolasi):
+    fhd_vert = np.array([[-1,0,1],
+                        [-1,0,1],
+                        [-1,0,1]])
+    fhd_hor = np.array([[-1,-1,-1],
+                        [0,0,0],
+                        [1,1,1]])
+
+    fhd_vert_conv = convolve2d(sba_interpolasi,fhd_vert,mode='same',boundary='symm')
+    fhd_hor_conv = convolve2d(sba_interpolasi,fhd_hor,mode='same',boundary='symm')
+
+    FHD = fhd_vert_conv + fhd_hor_conv
+    return FHD
+
+def svd(sba_interpolasi):
+    elkins = svd_elkins(sba_interpolasi)
+    rosenbach = svd_rosenbach(sba_interpolasi)
+    henderson = svd_henderson(sba_interpolasi)
+    return elkins, rosenbach, henderson
+
 
 def spectral_analysis(sba_interpolasi, n, sample):
     spec_x = np.arange(1, n+1)
@@ -129,23 +159,3 @@ def movingaverage(input_array, n_mean):
     Filter = np.ones([n, n])/n**2
     result = convolve2d(input_array, Filter, mode='same', boundary='symm')
     return result
-
-def fhd(sba_interpolasi):
-    fhd_vert = np.array([[-1,0,1],
-                        [-1,0,1],
-                        [-1,0,1]])
-    fhd_hor = np.array([[-1,-1,-1],
-                        [0,0,0],
-                        [1,1,1]])
-
-    fhd_vert_conv = convolve2d(sba_interpolasi,fhd_vert,mode='same',boundary='symm')
-    fhd_hor_conv = convolve2d(sba_interpolasi,fhd_hor,mode='same',boundary='symm')
-
-    FHD = fhd_vert_conv + fhd_hor_conv
-    return FHD
-
-def svd(sba_interpolasi):
-    elkins = svd_elkins(sba_interpolasi)
-    rosenbach = svd_rosenbach(sba_interpolasi)
-    henderson = svd_henderson(sba_interpolasi)
-    return elkins, rosenbach, henderson

@@ -17,9 +17,9 @@ urlpatterns = [
     path('dashboard/workspace/<current_id>/get-topo', get_topo, name='get_topo'),
     path('dashboard/workspace/<current_id>/get-bouguer', get_bouguer, name='get_bouguer'),
     path('dashboard/workspace/<current_id>/bouguer-map', bouguer_map, name='bouguer_map'),
-    path('dashboard/workspace/<current_id>/get-spectrum', get_spectrum, name='get_spectrum'),
     path('dashboard/workspace/<current_id>/get-fhd', get_fhd, name='get_fhd'),
     path('dashboard/workspace/<current_id>/get-svd', get_svd, name='get_svd'),
+    path('dashboard/workspace/<current_id>/get-gauss', get_gauss, name='get_gauss'),
     path('save-grid/<current_id>', save_grid, name='save_grid'),
 ]
 

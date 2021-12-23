@@ -8,7 +8,6 @@ let mapPlot = (x, y, z, title) => {
                 colorscale: 'Jet',
                 contours: {
                     coloring: 'heatmap',
-                    showlabels: true,
                     labelfont: {
                     family: 'Raleway',
                     size: 12,
@@ -26,20 +25,20 @@ let mapPlot = (x, y, z, title) => {
 }   
 
 let elevPlot = () => {
-    let x = JSON.parse(JSON.parse(localStorage.getItem('data'))['x_grid']);
-    let y = JSON.parse(JSON.parse(localStorage.getItem('data'))['y_grid']);
-    let z = JSON.parse(JSON.parse(localStorage.getItem('data'))['z_grid']);
+    let x = JSON.parse(localStorage.getItem('data'))['x'];
+    let y =JSON.parse(localStorage.getItem('data'))['y'];
+    let z = JSON.parse(localStorage.getItem('data'))['z'];
     mapPlot(x, y, z, "Peta Kontur Elevasi");
 }
 
 let faPlot = () => {
-    let x = JSON.parse(JSON.parse(localStorage.getItem('data'))['x_grid']);
-    let y = JSON.parse(JSON.parse(localStorage.getItem('data'))['y_grid']);
-    let fa = JSON.parse(JSON.parse(localStorage.getItem('data'))['fa_grid']);
-    mapPlot(x, y, fa, "Peta Kontur FreeAir");
+    let x = JSON.parse(localStorage.getItem('data'))['x'];
+    let y = JSON.parse(localStorage.getItem('data'))['y'];
+    let fa = JSON.parse(localStorage.getItem('data'))['freeair'];
+    mapPlot(x, y, fa, "Peta Kontur Free Air");
 }
 
-let spectrumplot = () =>  {
+let spectrumPlot = () =>  {
     try {
         let k = JSON.parse(JSON.parse(localStorage.getItem('spectrumdict'))['k']);
         let lnA_1 = JSON.parse(JSON.parse(localStorage.getItem('spectrumdict'))['lnA_1']);

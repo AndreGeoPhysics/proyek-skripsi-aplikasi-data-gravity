@@ -1,4 +1,4 @@
-function sbaGridCalc(){
+function sbaPlot(){
     var xhttp = new XMLHttpRequest();
     try{
         xhttp.onload = function() {

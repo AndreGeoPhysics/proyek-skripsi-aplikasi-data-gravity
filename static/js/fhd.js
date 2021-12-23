@@ -1,4 +1,4 @@
-function fhdCalc(){
+function fhdPlot(){
     var xhttp = new XMLHttpRequest();
     try{
         xhttp.onload = function() {

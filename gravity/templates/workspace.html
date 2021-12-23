@@ -10,23 +10,26 @@
                     <tr>
                         <th>NAMA PROYEK</th>
                         <th>NILAI DENSITAS</th>
+                        <th>JUMLAH GRID</th>
+                        <th>INTERVAL SAMPEL</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>{{ work_data.nama_proyek }}</td>
                         <td>{{ work_data.density }}</td>
+                        <td>{{ grid_data.n_grid }}</td>
+                        <td>{{ grid_data.sample }}</td>
                     </tr>
                 </tbody>
             </table>
-            <a href="{% url 'save_grid' work_data.unique_id %}" class="btn btn-secondary">masukkan grid</a>
                 <div class="fixTableHead">
                     <table class="table table-bordered table-striped" id="mainTable">
                     </table>        
                 </div>
         <br>
         <button class="btn btn-primary" onclick="sbaCalc()">Koreksi Bouguer</button>
-        <button class="btn btn-primary" onclick="spectralCalc()">Analisis Spektral</button>
+        <a href="{% url 'save_grid' work_data.unique_id %}" class="btn btn-secondary">Ganti Grid</a>
         <a href="/dashboard" class="btn btn-danger">kembali</a>
         </div>
         <div class="col-md-6">
@@ -36,10 +39,12 @@
                 <div class="tab">
                     <button class="tablinks" onclick="elevPlot()">Elevasi</button>
                     <button class="tablinks" onclick="faPlot()">Free Air Anomaly</button>
-                    <button class="tablinks" onclick="sbaGridCalc()">SBA</button>
-                    <button class="tablinks" onclick="spectrumplot()">Spektral Analisis</button>
-                    <button class="tablinks" onclick="fhdCalc()">FHD</button>
-                    <button class="tablinks" onclick="svdCalc()">SVD</button>
+                    <button class="tablinks" onclick="sbaPlot()">SBA</button>
+                    <button class="tablinks" onclick="fhdPlot()">FHD</button>
+                    <button class="tablinks" onclick="elkinsPlot()">SVD Elkins</button>
+                    <button class="tablinks" onclick="rosenbachPlot()">SVD Rosenbach</button>
+                    <button class="tablinks" onclick="hendersonPlot()">SVD Henderson & Zietz</button>
+                    <button class="tablinks" onclick="gaussPlot()">Gaussian</button>                    
                 </div>
         
                 <div id="Elevasi" class="tabcontent">
@@ -52,9 +57,9 @@
 <script src="{% static 'js/table.js' %}"></script>
 <script src="{% static 'js/sba_table.js' %}"></script>
 <script src="{% static 'js/sbamap.js' %}"></script>
-<script src="{% static 'js/spectrum.js' %}"></script>
 <script src="{% static 'js/fhd.js' %}"></script>
 <script src="{% static 'js/svd.js' %}"></script>
+<script src="{% static 'js/gauss.js' %}"></script>
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 <link rel="stylesheet" href="{% static 'css/tab.css' %}">
 <link rel="stylesheet" href="{% static 'css/scroll_table.css' %}">
