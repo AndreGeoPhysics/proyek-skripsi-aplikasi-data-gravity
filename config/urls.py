@@ -19,7 +19,7 @@ urlpatterns = [
     path('dashboard/workspace/<current_id>/bouguer-map', bouguer_map, name='bouguer_map'),
     path('dashboard/workspace/<current_id>/get-fhd', get_fhd, name='get_fhd'),
     path('dashboard/workspace/<current_id>/get-svd', get_svd, name='get_svd'),
-    path('dashboard/workspace/<current_id>/get-gauss', get_gauss, name='get_gauss'),
+    path('dashboard/workspace/<current_id>/moving-average', moving_average, name='moving_average'),
     path('save-grid/<current_id>', save_grid, name='save_grid'),
 ]
 

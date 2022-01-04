@@ -37,14 +37,16 @@
                 <p>Klik pilihan untuk melihat peta kontur:</p>
         
                 <div class="tab">
+                    <button class="tablinks" onclick="densityPlot()">Densitas Parasnis</button>
                     <button class="tablinks" onclick="elevPlot()">Elevasi</button>
                     <button class="tablinks" onclick="faPlot()">Free Air Anomaly</button>
                     <button class="tablinks" onclick="sbaPlot()">SBA</button>
+                    <button class="tablinks" onclick="regionalPlot()">Regional</button>
+                    <button class="tablinks" onclick="residualPlot()">Residual</button>
                     <button class="tablinks" onclick="fhdPlot()">FHD</button>
                     <button class="tablinks" onclick="elkinsPlot()">SVD Elkins</button>
                     <button class="tablinks" onclick="rosenbachPlot()">SVD Rosenbach</button>
                     <button class="tablinks" onclick="hendersonPlot()">SVD Henderson & Zietz</button>
-                    <button class="tablinks" onclick="gaussPlot()">Gaussian</button>                    
                 </div>
         
                 <div id="Elevasi" class="tabcontent">
@@ -59,7 +61,8 @@
 <script src="{% static 'js/sbamap.js' %}"></script>
 <script src="{% static 'js/fhd.js' %}"></script>
 <script src="{% static 'js/svd.js' %}"></script>
-<script src="{% static 'js/gauss.js' %}"></script>
+<script src="{% static 'js/anomaly.js' %}"></script>
+<script src="{% static 'js/density.js' %}"></script>
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 <link rel="stylesheet" href="{% static 'css/tab.css' %}">
 <link rel="stylesheet" href="{% static 'css/scroll_table.css' %}">

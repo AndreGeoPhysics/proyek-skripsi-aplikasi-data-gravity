@@ -20,8 +20,9 @@ def densitas_parasnis(freeair, elevasi):
     freeair = np.transpose(np.array([freeair]))
     elevasi = np.transpose(np.array([elevasi]))
     konstanta = 1/(.04192)
-    return float(konstanta * np.transpose(elevasi).dot(np.linalg.pinv(elevasi.dot(np.transpose(elevasi)))).dot(freeair))
-
+    sumbu_x = elevasi /(.04192)
+    density = float(konstanta * np.transpose(elevasi).dot(np.linalg.pinv(elevasi.dot(np.transpose(elevasi)))).dot(freeair))
+    return sumbu_x, density
 def bouguer(freeair, elevasi, densitas):
     freeair = np.transpose(np.array([freeair]))
     elevasi = np.transpose(np.array([elevasi]))
@@ -55,15 +56,6 @@ def svd_henderson(input_array):
     svdhend = convolve2d(input_array,matrix_henderson,mode='same',boundary='symm')
     return svdhend
 
-def gaussian(input_array):
-    matrix_gaussian = np.array([[0.000335463,0.006737947,0.018315639,0.006737947,0.000335463],
-                                [0.006737947,0.135335283,0.367879441,0.135335283,0.006737947],
-                                [0.018315639,0.367879441,1,0.367879441,0.018315639],
-                                [0.006737947,0.135335283,0.367879441,0.135335283,0.006737947],
-                                [0.000335463,0.006737947,0.018315639,0.006737947,0.000335463]])
-    gaussian = convolve2d(input_array,matrix_gaussian,mode='same',boundary='symm')
-    return gaussian
-
 def grid(x, y, sba, n):
     ngrid = n 
     x_grid= np.linspace(np.min(x), np.max(x), ngrid)
@@ -93,69 +85,8 @@ def svd(sba_interpolasi):
     henderson = svd_henderson(sba_interpolasi)
     return elkins, rosenbach, henderson
 
-
-def spectral_analysis(sba_interpolasi, n, sample):
-    spec_x = np.arange(1, n+1)
-    dt = (n*sample)+sample
-    f = (spec_x/2)/dt
-    k = 2*np.pi*f
-    n1 = n//3
-    n2 = n//2
-    n3 = n//3*2
-    sba_interpolasi = np.array(sba_interpolasi)
-    spec_y_1 = sba_interpolasi[:,n1].tolist()
-    spec_yfft_1 = abs(fft.fft(spec_y_1))
-    lnA_1 = np.log(spec_yfft_1)
-
-    spec_y_2 = sba_interpolasi[n2,:].tolist()
-    spec_yfft_2 = abs(fft.fft(spec_y_2))
-    lnA_2 = np.log(spec_yfft_2)
-
-    spec_y_3 = sba_interpolasi[:,n3].tolist()
-    spec_yfft_3 = abs(fft.fft(spec_y_3))
-    lnA_3 = np.log(spec_yfft_3)
-
-    return k, lnA_1, lnA_2, lnA_3
-
-def get_linear(regional_x1, regional_x2, regional_x3, regional_y1, regional_y2, regional_y3):
-    nama_regionalx = [regional_x1,regional_x2,regional_x3]
-    nama_regionaly = [regional_y1,regional_y2,regional_y3]
-    nama_residualx = [residual_x1,residual_x2,residual_x3]
-    nama_residualy = [residual_y1,residual_y2,residual_y3]
-
-    nama_model_regional = ['model_regional1','model_regional2','model_regional3']
-    nama_model_residual = ['model_residual1','model_residual2','model_residual3']
-
-    regional_out,residual_out,intercept,gradien = [],[],[],[]
-
-    for i,j,k,l,m,n in zip(nama_regionalx,nama_regionaly,nama_residualx,
-                        nama_residualy,nama_model_regional,nama_model_residual):
-        m = LinearRegression().fit(i.reshape(-1, 1),j.reshape(-1, 1))
-        n = LinearRegression().fit(k.reshape(-1, 1),l.reshape(-1, 1))
-        intercept.extend((m.intercept_,n.intercept_))
-        gradien.extend((m.coef_,n.coef_))
-        y_reg = m.intercept_ + m.coef_ * i
-        y_res = n.intercept_ + n.coef_ * k
-        regional_out.append(y_reg)
-        residual_out.append(y_res)
-
-    for i in range(len(gradien)):
-        gradien[i] = gradien[i].flatten()
-
-    #moving average    
-    # (c_residual - c_regional)/(m_regional - m_residual)
-    x_1 = (intercept[1][0] - intercept[0][0])/(gradien[0][0] - gradien[1][0])
-    x_2 = (intercept[3][0] - intercept[2][0])/(gradien[2][0] - gradien[3][0])
-    x_3 = (intercept[5][0] - intercept[4][0])/(gradien[4][0] - gradien[5][0])
-
-    X = np.array([x_1, x_2, x_3])
-    lamda_x = (2*np.pi)/X
-    N = lamda_x/200
-    N_mean = np.mean(N)
-    return X, N_mean
-
-def movingaverage(input_array, n_mean):
-    n = math.floor(n_mean)
+def movingaverage(input_array, n):
     Filter = np.ones([n, n])/n**2
-    result = convolve2d(input_array, Filter, mode='same', boundary='symm')
-    return result
+    regional = convolve2d(input_array, Filter, mode='same', boundary='symm')
+    residual = input_array - regional
+    return regional, residual

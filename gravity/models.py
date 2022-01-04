@@ -27,6 +27,7 @@ class GridTable(models.Model):
     sba_interpolate = models.TextField(null=True)
     elev_interpolate = models.TextField(null=True)
     fa_interpolate = models.TextField(null=True)
+    z_interpolate = models.TextField(null=True)
 
     def __str__(self): 
         return "%s grid" % self.grid_ref.unique_id

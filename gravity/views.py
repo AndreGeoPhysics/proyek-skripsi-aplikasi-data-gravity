@@ -81,14 +81,16 @@ def get_topo(request, current_id):
 @login_required(login_url=settings.LOGIN_URL)
 def get_bouguer(request, current_id):
     table_data = GravityTable.objects.get(unique_id=current_id)
+    grid_data = GridTable.objects.get(grid_ref=table_data)
     x, y, z, freeair = dbDecode(table_data)
-    density_data = densitas_parasnis(freeair, z)
+    sumbu_x, density_data = densitas_parasnis(freeair, z)
     sba_data = bouguer(freeair, z, density_data)
     table_data.density = density_data
     table_data.sba =  sba_data
     table_data.save()
     sba_dict = {}
     sba_dict['sba'] = sba_data
+    sba_dict['sumbu_x'] = json.dumps(sumbu_x.tolist())
     return JsonResponse(sba_dict)
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -138,7 +140,6 @@ def bouguer_map(request, current_id):
 def get_fhd(request, current_id):
     table_data = GravityTable.objects.get(unique_id=current_id)
     grid_data = GridTable.objects.get(grid_ref=table_data)
-    x, y, z, freeair = dbDecode(table_data)
     jsonDec = json.decoder.JSONDecoder()
     sba_interpolasi = jsonDec.decode(grid_data.sba_interpolate)
     FHD = fhd(sba_interpolasi)
@@ -149,7 +150,6 @@ def get_fhd(request, current_id):
 def get_svd(request, current_id):
     table_data = GravityTable.objects.get(unique_id=current_id)
     grid_data = GridTable.objects.get(grid_ref=table_data)
-    x, y, z, freeair = dbDecode(table_data)
     jsonDec = json.decoder.JSONDecoder()
     sba_interpolasi = jsonDec.decode(grid_data.sba_interpolate)
     elkins, rosenbach, henderson = svd(sba_interpolasi)
@@ -159,16 +159,17 @@ def get_svd(request, current_id):
     svd_dict['henderson'] = json.dumps(henderson.tolist())
     return JsonResponse(svd_dict)
 
-def get_gauss(request, current_id):
+def moving_average(request, current_id):
     table_data = GravityTable.objects.get(unique_id=current_id)
     grid_data = GridTable.objects.get(grid_ref=table_data)
-    x, y, z, freeair = dbDecode(table_data)
     jsonDec = json.decoder.JSONDecoder()
     sba_interpolasi = jsonDec.decode(grid_data.sba_interpolate)
-    gauss = gaussian(sba_interpolasi)
-    gauss_dict = {}
-    gauss_dict['gauss'] = json.dumps(gauss.tolist())
-    return JsonResponse(gauss_dict)
+    n = 10
+    regional, residual = movingaverage(sba_interpolasi, n)
+    movavg_dict = {}
+    movavg_dict['regional'] = json.dumps(regional.tolist())
+    movavg_dict['residual'] = json.dumps(residual.tolist())
+    return JsonResponse(movavg_dict)
 
 @login_required(login_url=settings.LOGIN_URL)
 def sign_up(request):
@@ -235,23 +236,3 @@ def upload_file(request):
             'form': form,
         }
     return render(request, 'upload-file.html', konteks)
-
-
-# def get_spectrum(request, current_id):
-#     table_data = GravityTable.objects.get(unique_id=current_id)
-#     grid_data = GridTable.objects.get(grid_ref=table_data)
-#     x, y, z, freeair = dbDecode(table_data)
-#     jsonDec = json.decoder.JSONDecoder()
-#     sba_interpolasi = jsonDec.decode(grid_data.sba_interpolate)
-#     n = grid_data.n_grid
-#     sample = grid_data.sample
-#     k, lnA_1, lnA_2, lnA_3 = spectral_analysis(sba_interpolasi, n, sample)
-#     spectral_data = SpectralTable(spectral_ref=grid_data, k=k, lnA_1=lnA_1, lnA_2=lnA_2, lnA_3=lnA_3)
-#     spectral_data.save()
-#     n_half = n//2
-#     spectrum_dict = {}
-#     spectrum_dict['k'] = json.dumps(k[:n_half].tolist())
-#     spectrum_dict['lnA_1'] = json.dumps(lnA_1[:n_half].tolist())
-#     spectrum_dict['lnA_2'] = json.dumps(lnA_2[:n_half].tolist())
-#     spectrum_dict['lnA_3'] = json.dumps(lnA_3[:n_half].tolist())
-#     return JsonResponse(spectrum_dict)
