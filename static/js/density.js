@@ -1,14 +1,13 @@
 function densityPlot(){
     var xhttp = new XMLHttpRequest();
-    try{
-        xhttp.onload = function() {
-            let x = JSON.parse(this.responseText)['sumbu_x'];
-            let y = JSON.parse(localStorage.getItem('data'))['freeair'];
-            regPlot(x, y, "Plot Regresi Linear Densitas");
-        };    
-    } catch (error){
-        window.alert("belum ada data");
-    }
+    xhttp.onload = function() {
+        let x = JSON.parse(this.responseText)['sumbu_x'];
+        let y = JSON.parse(localStorage.getItem('data'))['freeair'];
+        let z = JSON.parse(this.responseText)['y_pred'];
+        let legend = JSON.parse(this.responseText)['legend'];
+        regPlot(x, y, z, legend, "Plot Regresi Linear Densitas");
+    };    
+
     const splittedPathname = window.location.pathname.split("/");
     const uniqueId = splittedPathname[splittedPathname.length-1];
     xhttp.open("GET", `/dashboard/workspace/${uniqueId}/get-bouguer`, true);

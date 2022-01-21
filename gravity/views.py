@@ -83,14 +83,19 @@ def get_bouguer(request, current_id):
     table_data = GravityTable.objects.get(unique_id=current_id)
     grid_data = GridTable.objects.get(grid_ref=table_data)
     x, y, z, freeair = dbDecode(table_data)
-    sumbu_x, density_data = densitas_parasnis(freeair, z)
-    sba_data = bouguer(freeair, z, density_data)
-    table_data.density = density_data
+    r_sq, density, constant, y_pred, sumbu_x = densitas_parasnis(freeair, z)
+    if density < 1.9 or density > 3.1:
+        density = 2.7
+    sba_data = bouguer(freeair, z, density)
+    table_data.density = density
     table_data.sba =  sba_data
     table_data.save()
+    legend = f'R^2= {r_sq}, Intercept = {constant}'
     sba_dict = {}
     sba_dict['sba'] = sba_data
-    sba_dict['sumbu_x'] = json.dumps(sumbu_x.tolist())
+    sba_dict['sumbu_x'] = sumbu_x
+    sba_dict['y_pred'] = y_pred
+    sba_dict['legend'] = legend
     return JsonResponse(sba_dict)
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -141,8 +146,8 @@ def get_fhd(request, current_id):
     table_data = GravityTable.objects.get(unique_id=current_id)
     grid_data = GridTable.objects.get(grid_ref=table_data)
     jsonDec = json.decoder.JSONDecoder()
-    sba_interpolasi = jsonDec.decode(grid_data.sba_interpolate)
-    FHD = fhd(sba_interpolasi)
+    residual = jsonDec.decode(grid_data.residual)
+    FHD = fhd(residual)
     fhd_dict = {}
     fhd_dict['fhd'] = json.dumps(FHD.tolist())
     return JsonResponse(fhd_dict)
@@ -151,8 +156,8 @@ def get_svd(request, current_id):
     table_data = GravityTable.objects.get(unique_id=current_id)
     grid_data = GridTable.objects.get(grid_ref=table_data)
     jsonDec = json.decoder.JSONDecoder()
-    sba_interpolasi = jsonDec.decode(grid_data.sba_interpolate)
-    elkins, rosenbach, henderson = svd(sba_interpolasi)
+    residual = jsonDec.decode(grid_data.residual)
+    elkins, rosenbach, henderson = svd(residual)
     svd_dict = {}
     svd_dict['elkins'] = json.dumps(elkins.tolist())
     svd_dict['rosenbach'] = json.dumps(rosenbach.tolist())
@@ -164,8 +169,12 @@ def moving_average(request, current_id):
     grid_data = GridTable.objects.get(grid_ref=table_data)
     jsonDec = json.decoder.JSONDecoder()
     sba_interpolasi = jsonDec.decode(grid_data.sba_interpolate)
-    n = 10
-    regional, residual = movingaverage(sba_interpolasi, n)
+    n = 5
+    n_mean = 5
+    regional, residual = movingaverage(sba_interpolasi, n, n_mean)
+    grid_data.regional = json.dumps(regional.tolist())
+    grid_data.residual = json.dumps(residual.tolist())
+    grid_data.save()
     movavg_dict = {}
     movavg_dict['regional'] = json.dumps(regional.tolist())
     movavg_dict['residual'] = json.dumps(residual.tolist())

@@ -17,12 +17,19 @@ def dbDecode(table):
     return x, y, z, freeair
 
 def densitas_parasnis(freeair, elevasi):
-    freeair = np.transpose(np.array([freeair]))
-    elevasi = np.transpose(np.array([elevasi]))
-    konstanta = 1/(.04192)
-    sumbu_x = elevasi /(.04192)
-    density = float(konstanta * np.transpose(elevasi).dot(np.linalg.pinv(elevasi.dot(np.transpose(elevasi)))).dot(freeair))
-    return sumbu_x, density
+    elevasi = np.array([elevasi])
+    y = freeair
+    konstanta = .04192
+    koreksi_bouguer = elevasi * konstanta
+    x = koreksi_bouguer.reshape((-1, 1))
+    sumbu_x = koreksi_bouguer.flatten().tolist()
+    model = LinearRegression().fit(x, y)
+    r_sq = model.score(x, y)
+    density = model.coef_[0]
+    constant = model.intercept_
+    y_pred = model.predict(x).tolist()
+    return r_sq, density, constant, y_pred, sumbu_x
+
 def bouguer(freeair, elevasi, densitas):
     freeair = np.transpose(np.array([freeair]))
     elevasi = np.transpose(np.array([elevasi]))
@@ -85,8 +92,8 @@ def svd(sba_interpolasi):
     henderson = svd_henderson(sba_interpolasi)
     return elkins, rosenbach, henderson
 
-def movingaverage(input_array, n):
-    Filter = np.ones([n, n])/n**2
+def movingaverage(input_array, n, n_mean):
+    Filter = np.ones([n, n])/n_mean**2
     regional = convolve2d(input_array, Filter, mode='same', boundary='symm')
     residual = input_array - regional
     return regional, residual
