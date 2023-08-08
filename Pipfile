@@ -4,18 +4,18 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "~=3.1.0"
+django = "*"
 pylint = "*"
-pandas = "==1.0.1"
+pandas = "*"
 msvc-runtime = "*"
 scipy = "*"
 utm = "*"
 pillow = "*"
 django-guid = "*"
-plotly = "==5.3.1"
+plotly = "*"
 sklearn = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.9"
+python_version = "*"
