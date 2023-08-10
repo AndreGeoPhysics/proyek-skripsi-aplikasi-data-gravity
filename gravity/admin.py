@@ -1,11 +1,10 @@
 from django.contrib import admin
-from .models import GravityTable, InputModel
+from .models import GravityTable, GridTable
 
 @admin.register(GravityTable)
-class TableAdmin(admin.ModelAdmin):
-    list_display = ('x', 'y', 'z', 'FA')
-
-@admin.register(InputModel)
-class InputAdmin(admin.ModelAdmin):
-    list_display = ('pengirim', 'data_input', 'delimiter')
+class GravityTableAdmin(admin.ModelAdmin):
+    list_display = ( 'unique_id', 'user_id', 'nama_proyek', 'tanggal', 'x', 'y', 'z', 'freeair', 'density', 'sba')
     
+@admin.register(GridTable)
+class GridTableAdmin(admin.ModelAdmin):
+    list_display = ('grid_ref', 'n_grid', 'x_grid', 'y_grid', 'sba_interpolate', 'elev_interpolate', 'fa_interpolate')

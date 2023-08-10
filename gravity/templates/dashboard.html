@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>
+                Daftar Data Gravitasi
+            </h3>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>NAMA PROYEK</th>
+                        <th>NAMA USER</th>
+                        <th>TANGGAL</th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bagian in rincian %}
+                    <tr>
+                        <td>{{ bagian.nama_proyek }}</td>
+                        <td>{{ bagian.user_id }}</td>
+                        <td>{{ bagian.tanggal }}</td>
+                        <td>
+                            <a href="{% url 'hapus_file' bagian.unique_id %}" class="btn btn-danger">Hapus</a>
+                            <a href="{% url 'workspace' bagian.unique_id %}" class="btn btn-primary">Olah Data</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="{% url 'upload_file' %}" class="btn btn-primary">Upload File</a>
+        </div>
+    </div>
+</div>
+    
+{% endblock %}

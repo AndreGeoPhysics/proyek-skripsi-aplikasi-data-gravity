@@ -1,22 +1,27 @@
-"""config URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import path
+from gravity.views import *
+from django.conf.urls.static import static
+from django.contrib.auth.views import LoginView, LogoutView
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('gravity/', include('gravity.urls')),
+    path('sign-up/', sign_up, name='sign_up'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
+    path('dashboard/', dashboard, name='dashboard'),
+    path('upload-file/', upload_file, name='upload_file'),
+    path('dashboard/workspace/<current_id>', workspace, name='workspace'),
+    path('dashboard/hapus/<current_id>', hapus_file, name='hapus_file'),
+    path('dashboard/workspace/<current_id>/get-topo', get_topo, name='get_topo'),
+    path('dashboard/workspace/<current_id>/get-bouguer', get_bouguer, name='get_bouguer'),
+    path('dashboard/workspace/<current_id>/bouguer-map', bouguer_map, name='bouguer_map'),
+    path('dashboard/workspace/<current_id>/get-fhd', get_fhd, name='get_fhd'),
+    path('dashboard/workspace/<current_id>/get-svd', get_svd, name='get_svd'),
+    path('dashboard/workspace/<current_id>/moving-average', moving_average, name='moving_average'),
+    path('save-grid/<current_id>', save_grid, name='save_grid'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

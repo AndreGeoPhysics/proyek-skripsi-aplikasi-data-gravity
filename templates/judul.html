@@ -1,0 +1,6 @@
+<center>
+    <h1>Portal Data Gravitasi</h1>
+    {% if user.is_authenticated %}
+        <p>halo, <strong>{{ user }}</strong>! / <a href="/sign-up">Tambah User</a> / <a href="{% url 'logout' %}">Log out</a></p>
+    {% endif %}
+</center>

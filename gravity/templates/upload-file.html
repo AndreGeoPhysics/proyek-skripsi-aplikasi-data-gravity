@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Upload File
+                </div>
+                <div class="card-body"></div>
+                {% if pesan %}
+                    <div class="alert alert-success">{{ pesan }}</div>
+                {% endif %}
+                <form action="/upload-file/" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+ 
+                    {{ form.as_p }}
+            
+                    <button class="btn btn-primary">upload file csv</button>
+                    <a href="/dashboard" class="btn btn-danger">kembali</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
